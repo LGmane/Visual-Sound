@@ -1,12 +1,14 @@
-import React from 'react';
-import AudioVisualizer from './components/AudioVisualizer'; // Import the visualizer component
+import React, { useRef } from 'react';
+import AudioVisualizer from './components/AudioVisualizer';
 
 function App() {
+  const analyserRef = useRef(null); // Referenz für den Analyser
+
   return (
     <div>
       <h1>Visual Sound</h1>
-      {/* Render the audio visualizer */}
-      <AudioVisualizer />
+      {/* Technische Ansicht */}
+      <AudioVisualizer analyserRef={analyserRef} />
     </div>
   );
 }

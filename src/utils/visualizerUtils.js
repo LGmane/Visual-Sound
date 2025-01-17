@@ -106,7 +106,7 @@ export function drawWaveOnBeat(canvasCtx, analyser) {
 export function drawBassImpact(canvasCtx, analyser) {
   const frequencyData = new Uint8Array(analyser.frequencyBinCount);
   let impactRadius = 0;
-  const bassThreshold = 160;
+  const bassThreshold = 200;
   const expansionSpeed = 25;
 
   function renderImpact() {
