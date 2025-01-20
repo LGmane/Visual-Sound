@@ -61,7 +61,6 @@ export function drawFrequencySpectrum(canvas, analyser) {
  * @param {AnalyserNode} analyser - The Web Audio API analyser node.
  */
 export function drawWaveOnBeat(canvasCtx, analyser) {
-
   const frequencyData = new Uint8Array(analyser.frequencyBinCount);
   let amplitude = 0.5;
   let phase = 0;
@@ -70,7 +69,11 @@ export function drawWaveOnBeat(canvasCtx, analyser) {
     analyser.getByteFrequencyData(frequencyData);
 
     // Calculate bass energy and normalize amplitude
-    const bassEnergy = frequencyData.slice(0, 10).reduce((acc, val) => acc + val, 0) / 10;
+    let bassEnergy = 0;
+    for (let i = 0; i < 10; i++) {
+      bassEnergy += frequencyData[i];
+    }
+    bassEnergy /= 10;
     amplitude = bassEnergy / 255;
 
     // Clear the wave area
@@ -113,7 +116,12 @@ export function drawBassImpact(canvasCtx, analyser) {
     analyser.getByteFrequencyData(frequencyData);
 
     // Calculate bass energy and trigger impact
-    const bassEnergy = frequencyData.slice(0, 10).reduce((acc, val) => acc + val, 0) / 10;
+    let bassEnergy = 0;
+    for (let i = 0; i < 10; i++) {
+      bassEnergy += frequencyData[i];
+    }
+    bassEnergy /= 10;
+
     if (bassEnergy > bassThreshold && impactRadius === 0) {
       impactRadius = 1;
     }
