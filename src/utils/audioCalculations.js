@@ -5,15 +5,25 @@ export function normalize(value, max = 255) {
   
   // Calculate volume (RMS)
   export function calculateVolume(dataArray) {
-    const sum = dataArray.reduce((acc, value) => acc + (value - 128) ** 2, 0);
-    return Math.sqrt(sum / dataArray.length) / 128; // Normalize to [0, 1]
-  }
+    let sumSquares = 0;
+
+    // Berechnung des quadrierten Mittelwerts
+    for (let i = 0; i < dataArray.length; i++) {
+        const centeredValue = dataArray[i] - 128;
+        sumSquares += centeredValue * centeredValue;
+    }
+
+    // RMS-Wert berechnen und normalisieren
+    return Math.sqrt(sumSquares / dataArray.length) / 128; // Normalisierung [0, 1]
+}
   
+/*
   // Calculate energy level (overall signal strength)
   export function calculateEnergyLevel(dataArray) {
     const sum = dataArray.reduce((acc, value) => acc + Math.abs(value - 128), 0);
     return sum / dataArray.length / 128; // Normalize to [0, 1]
   }
+  */
   
   // Calculate bass energy (average of low frequencies)
   export function calculateBassEnergy(frequencyData, bins = 10) {
@@ -21,7 +31,7 @@ export function normalize(value, max = 255) {
   }
   
   // Calculate peak hold logic (with decay)
-  export function calculatePeak(currentValue, peakValue, decay = 1) {
+  export function calculatePeak(currentValue, peakValue, decay = 5) {
     return currentValue > peakValue ? currentValue : Math.max(peakValue - decay, 0);
   }
   

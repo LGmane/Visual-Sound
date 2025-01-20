@@ -1,29 +1,27 @@
+// Import necessary React hooks and utilities
 import React, { useEffect, useState, useRef } from 'react';
 import { setupAudio } from '../utils/audioUtils'; // Utility for setting up audio
 import {
   calculateVolume,
-  calculateEnergyLevel,
   calculatePeak,
 } from '../utils/audioCalculations'; // Calculations for audio data
 import {
   drawFrequencySpectrum,
   drawWaveform,
   drawWaveOnBeat,
-  drawBassImpact,
 } from '../utils/visualizerUtils'; // Visualizations
 
-
 function AudioVisualizer() {
-  // State to manage available audio devices and the selected device
+  // State for managing audio devices and the selected device
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState('');
 
-  // Refs to store audio analyser, data arrays, and canvas reference
+  // Refs for audio analyser, data arrays, and canvas
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Load audio input devices on component mount
+  // Load available audio devices on component mount
   useEffect(() => {
     async function getAudioDevices() {
       const deviceList = await navigator.mediaDevices.enumerateDevices();
@@ -47,7 +45,6 @@ function AudioVisualizer() {
       analyserRef.current = analyser;
       dataArrayRef.current = dataArray;
 
-      // Start visualization functions
       startVisualizations();
     }
 
@@ -60,11 +57,9 @@ function AudioVisualizer() {
   function startVisualizations() {
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
-    //const frequencyData = new Uint8Array(analyserRef.current.frequencyBinCount);
     let volumePeak = 0;
-    let energyPeak = 0;
 
-    // Main visualizations
+    // Main visualization loop
     function renderFrame() {
       requestAnimationFrame(renderFrame);
 
@@ -72,13 +67,11 @@ function AudioVisualizer() {
       canvasCtx.fillStyle = 'rgb(0, 0, 0)';
       canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Calculate volume and energy
+      // Calculate volume
       const volume = calculateVolume(dataArrayRef.current);
-      const energyLevel = calculateEnergyLevel(dataArrayRef.current);
 
       // Update peaks
       volumePeak = calculatePeak(canvas.height * volume, volumePeak);
-      energyPeak = calculatePeak(canvas.height * energyLevel, energyPeak);
 
       // Draw the waveform
       drawWaveform(canvas, analyserRef.current, dataArrayRef.current);
@@ -88,29 +81,20 @@ function AudioVisualizer() {
 
       // Call additional animations
       drawWaveOnBeat(canvasCtx, analyserRef.current);
-      //drawBassImpact(canvasCtx, analyserRef.current);
 
       // Draw volume bar
       canvasCtx.fillStyle = 'rgb(0, 0, 255)';
       canvasCtx.fillRect(canvas.width - 50, canvas.height - canvas.height * volume, 30, canvas.height * volume);
 
       // Draw volume peak
-      canvasCtx.fillStyle = 'rgb(255, 255, 0)';
+      canvasCtx.fillStyle = 'rgb(0, 0, 255)';
       canvasCtx.fillRect(canvas.width - 50, canvas.height - volumePeak - 5, 30, 5);
-
-      // Draw energy bar
-      canvasCtx.fillStyle = 'rgb(0, 0, 255)';
-      canvasCtx.fillRect(canvas.width - 90, canvas.height - canvas.height * energyLevel, 30, canvas.height * energyLevel);
-
-      // Draw energy peak
-      canvasCtx.fillStyle = 'rgb(0, 0, 255)';
-      canvasCtx.fillRect(canvas.width - 90, canvas.height - energyPeak - 5, 30, 5);
     }
 
     renderFrame();
   }
 
-  // --- Render the component --- //
+  // Render the component
   return (
     <div>
       <h1>Audio Visualizer</h1>
@@ -127,7 +111,12 @@ function AudioVisualizer() {
         ))}
       </select>
 
-      <canvas ref={canvasRef} width="800" height="400" style={{ border: '1px solid white' }}></canvas>
+      <canvas
+        ref={canvasRef}
+        width="1600"
+        height="900"
+        style={{ border: '1px solid white' }}
+      ></canvas>
     </div>
   );
 }
