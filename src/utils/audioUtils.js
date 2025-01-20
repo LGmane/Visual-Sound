@@ -1,5 +1,4 @@
 
-/*
 export async function setupAudio(deviceId) {
   // Define constraints for the audio input
   const constraints = { audio: { deviceId: { exact: deviceId } } };
@@ -28,4 +27,3 @@ export async function setupAudio(deviceId) {
     throw error;
   }
 }
-*/
