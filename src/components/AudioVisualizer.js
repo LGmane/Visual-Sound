@@ -1,14 +1,13 @@
 // Import necessary React hooks and utilities
 import React, { useEffect, useState, useRef } from 'react';
-//import { setupAudio } from '../utils/audioUtils'; // Utility for setting up audio
+import { setupAudio } from '../utils/audioUtils'; // Utility for setting up audio
 import {
   calculateVolume,
   calculatePeak,
 } from '../utils/audioCalculations'; // Calculations for audio data
 import {
   drawFrequencySpectrum,
-  drawWaveform,
-  drawWaveOnBeat,
+  drawWaveform
 } from '../utils/visualizerUtils'; // Visualizations
 
 /**
@@ -47,67 +46,86 @@ function AudioVisualizer() {
 
   // Initialize audio when a device is selected
   useEffect(() => {
-    // Ensure only one animation loop runs
-    let animationActive = false;
-  
+    if (!selectedDevice) return;
+    async function initializeAudio() {
+      const { analyser, dataArray } = await setupAudio(selectedDevice);
+      analyserRef.current = analyser;
+      dataArrayRef.current = dataArray;
+    }
+    initializeAudio();
+  }, [selectedDevice]);
+
+  // Manage visualizations based on isAnimating state
+  useEffect(() => {
+    let animationActive = false; // Kontrolliert den Status der Animation
+
     if (isAnimating) {
-      console.log('Starting animation loop'); // Debugging
+      console.log('Animation started');
       const canvas = canvasRef.current;
       const canvasCtx = canvas.getContext('2d');
       let volumePeak = 0;
-  
+
+      let lastRenderTime = 0;
+      const targetFPS = 60; // Maximal 60 FPS
       // Render function
-      function renderFrame() {
-        if (!animationActive) return; // Stop rendering if the animation is inactive
-  
+      function renderFrame(currentTime) {
+
+        const timeSinceLastRender = currentTime - lastRenderTime;
+        if (timeSinceLastRender < 1000 / targetFPS) {
+          requestAnimationFrame(renderFrame);
+          return;
+        }
+        lastRenderTime = currentTime;
+
+        if (!animationActive) return; // Beende die Schleife, wenn die Animation gestoppt wurde
+
         // Clear canvas
         canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-  
+
         // Calculate volume
         const volume = calculateVolume(dataArrayRef.current);
         volumePeak = calculatePeak(canvas.height * volume, volumePeak);
-  
+
         // Draw visualizations
         drawWaveform(canvas, analyserRef.current, dataArrayRef.current);
         drawFrequencySpectrum(canvas, analyserRef.current);
-        drawWaveOnBeat(canvasCtx, analyserRef.current);
-  
+
         // Draw volume bar
         canvasCtx.fillStyle = 'rgb(0, 0, 255)';
         canvasCtx.fillRect(canvas.width - 50, canvas.height - canvas.height * volume, 30, canvas.height * volume);
-  
+
         // Draw volume peak
         canvasCtx.fillStyle = 'rgb(0, 0, 255)';
         canvasCtx.fillRect(canvas.width - 50, canvas.height - volumePeak - 5, 30, 5);
-  
-        // Schedule next frame
+
+        // Request the next frame
         animationFrameRef.current = requestAnimationFrame(renderFrame);
-      }
-  
-      // Activate animation
+      }requestAnimationFrame(renderFrame);
+
+      // Start the animation
       animationActive = true;
       animationFrameRef.current = requestAnimationFrame(renderFrame);
     } else {
-      console.log('Stopping animation loop'); // Debugging
-      animationActive = false;
+      console.log('Animation stopped');
+      animationActive = false; // Beende die Animation
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
-    }
-  
-    // Cleanup on unmount
+    } 
+
+    // Cleanup beim Verlassen der Komponente
     return () => {
-      animationActive = false;
+      animationActive = false; // Animation deaktivieren
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
     };
   }, [isAnimating]);
-  
-  
+
+
 
   // Function to start visualizations
   function startVisualizations() {
