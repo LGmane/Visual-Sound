@@ -1,7 +1,7 @@
 // src/components/AppLogic/VisualizerSelector.js
 import React from 'react';
 
-function VisualizerSelector({ activeVisualizers, toggleVisualizer }) {
+function VisualizerSelector({ activeVisualizers, toggleVisualizer, toggleBackgroundVideo, showBackgroundVideo }) {
   const visualizers = [
     { id: 'waveform', label: 'Waveform Visualizer' },
     { id: 'frequency', label: 'Frequency Visualizer' },
@@ -25,6 +25,17 @@ function VisualizerSelector({ activeVisualizers, toggleVisualizer }) {
             {label}
           </button>
         ))}
+        <button
+          onClick={toggleBackgroundVideo}
+          style={{
+            padding: '10px',
+            border: showBackgroundVideo ? '2px solid blue' : '1px solid gray',
+            backgroundColor: showBackgroundVideo ? '#e0f0ff' : '#fff',
+            cursor: 'pointer',
+          }}
+        >
+          Background Video
+        </button>
       </div>
     </div>
   );

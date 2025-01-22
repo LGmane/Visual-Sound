@@ -1,9 +1,10 @@
+// src/components/AudioVisualizer/MasterVisualizer.js
 import React, { useEffect, useRef, useContext } from 'react';
 import { AudioContext } from '../AppLogic/AudioContextProvider';
 import { Visualizers } from './configs';
 import { setupAudio } from '../../utils/audioUtils';
 
-function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor }) {
+function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBackgroundVideo }) {
   const { selectedDevice } = useContext(AudioContext);
   const canvasRef = useRef(null);
   const videoRef = useRef(null); // Ref für das Video
@@ -18,7 +19,7 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor }) {
       const video = videoRef.current;
 
       // Warte, bis das Video geladen ist
-      if (video) {
+      if (video && showBackgroundVideo) {
         await video.play().catch((error) => {
           console.error('Error attempting to play video:', error);
         });
@@ -31,9 +32,13 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor }) {
 
         const canvasCtx = canvas.getContext('2d');
 
-        // Zeichne das Video als Hintergrund
-        if (video && video.readyState >= 2) {
+        // Zeichne das Video als Hintergrund, wenn es aktiviert ist
+        if (video && showBackgroundVideo && video.readyState >= 2) {
           canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        } else {
+          // Fallback: Schwarz zeichnen
+          canvasCtx.fillStyle = 'black';
+          canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
         // Zeichne die aktiven Visualizer
@@ -57,7 +62,7 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor }) {
     return () => {
       animationActive = false;
     };
-  }, [selectedDevice, activeVisualizers, waveColor, frequencyColor]);
+  }, [selectedDevice, activeVisualizers, waveColor, frequencyColor, showBackgroundVideo]);
 
   return (
     <div className="visualizer-container">
@@ -66,7 +71,6 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor }) {
         autoPlay
         muted
         loop
-        onLoadedData={() => console.log('Video loaded and ready to play')}
         style={{ display: 'none' }}
         src={require('../../assets/videos/Background.mp4')} // Importiere das Video
       />

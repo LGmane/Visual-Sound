@@ -1,5 +1,4 @@
 // src/App.js
-// src/App.js
 import React, { useContext, useState } from 'react';
 import { AudioContext } from './components/AppLogic/AudioContextProvider';
 import DeviceSelector from './components/AppLogic/DeviceSelector';
@@ -11,8 +10,9 @@ import './styles/App.css';
 function App() {
   const { selectedDevice, setSelectedDevice } = useContext(AudioContext);
 
-  // State für aktive Visualisierer
+  // State für aktive Visualisierer und Hintergrundvideo
   const [activeVisualizers, setActiveVisualizers] = useState([]);
+  const [showBackgroundVideo, setShowBackgroundVideo] = useState(false);
 
   // Zustand für Farben
   const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Standard: Grün
@@ -27,6 +27,11 @@ function App() {
     );
   };
 
+  // Funktion zum Umschalten des Hintergrundvideos
+  const toggleBackgroundVideo = () => {
+    setShowBackgroundVideo((prev) => !prev);
+  };
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -34,6 +39,8 @@ function App() {
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
         toggleVisualizer={toggleVisualizer}
+        toggleBackgroundVideo={toggleBackgroundVideo} // Übergebe die Funktion
+        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
       />
       <ColorPicker
         waveColor={waveColor}
@@ -45,6 +52,7 @@ function App() {
         activeVisualizers={activeVisualizers}
         waveColor={waveColor}
         frequencyColor={frequencyColor}
+        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
       />
     </div>
   );
