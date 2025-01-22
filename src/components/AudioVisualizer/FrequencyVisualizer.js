@@ -23,7 +23,7 @@ export default function FrequencyVisualizer(canvas, analyser, dataArray, { frequ
   const canvasCtx = canvas.getContext('2d');
   analyser.getByteFrequencyData(dataArray);
 
-  const barWidth = (canvas.width / dataArray.length) * 2.5; // Einmalige Berechnung
+  const barWidth = (canvas.width / dataArray.length) * 1.5; // Einmalige Berechnung
   let x = 0;
 
   for (let i = 0; i < dataArray.length; i++) {

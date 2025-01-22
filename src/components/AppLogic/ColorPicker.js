@@ -31,3 +31,4 @@ function ColorPicker({ waveColor, setWaveColor, frequencyColor, setFrequencyColo
 }
 
 export default ColorPicker;
+
