@@ -23,6 +23,9 @@ function MasterVisualizer({ activeVisualizers }) {
         const canvasCtx = canvas.getContext('2d');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
+        canvasCtx.fillStyle = 'rgb(0, 0, 0)'; // Schwarz als Hintergrund
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
         activeVisualizers.forEach((visualizerType) => {
           if (Visualizers[visualizerType]) {
             Visualizers[visualizerType].draw(canvas, analyser, dataArray);
