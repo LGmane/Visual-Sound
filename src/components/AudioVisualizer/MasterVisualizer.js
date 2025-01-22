@@ -4,44 +4,30 @@ import { AudioContext } from '../AppLogic/AudioContextProvider';
 import { Visualizers } from './configs';
 import { setupAudio } from '../../utils/audioUtils';
 
-function MasterVisualizer() {
-  const { selectedDevice, visualizerType } = useContext(AudioContext);
+function MasterVisualizer({ activeVisualizers }) {
+  const { selectedDevice } = useContext(AudioContext);
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    console.log('MasterVisualizer - selectedDevice:', selectedDevice);
-    console.log('MasterVisualizer - visualizerType:', visualizerType);
+    if (!selectedDevice) return;
 
     let animationActive = true;
 
     const initializeAudio = async () => {
-      if (!selectedDevice) {
-        console.error('No device selected. Cannot initialize audio.');
-        return;
-      }
-
-      console.log('Initializing audio for device:', selectedDevice);
-
       const canvas = canvasRef.current;
       const { analyser, dataArray } = await setupAudio(selectedDevice);
-
-      console.log('Audio setup complete. Analyser:', analyser);
-      console.log('Data Array:', dataArray);
 
       const renderFrame = () => {
         if (!animationActive) return;
 
-        console.log('Rendering frame for visualizerType:', visualizerType);
-
         const canvasCtx = canvas.getContext('2d');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (Visualizers[visualizerType]) {
-          console.log('Drawing visualizer for type:', visualizerType);
-          Visualizers[visualizerType].draw(canvas, analyser, dataArray);
-        } else {
-          console.error('No visualizer found for type:', visualizerType);
-        }
+        activeVisualizers.forEach((visualizerType) => {
+          if (Visualizers[visualizerType]) {
+            Visualizers[visualizerType].draw(canvas, analyser, dataArray);
+          }
+        });
 
         requestAnimationFrame(renderFrame);
       };
@@ -49,31 +35,20 @@ function MasterVisualizer() {
       renderFrame();
     };
 
-    if (selectedDevice) {
-      initializeAudio();
-    }
+    initializeAudio();
 
     return () => {
-      console.log('Cleaning up animation.');
       animationActive = false;
     };
-  }, [selectedDevice, visualizerType]);
+  }, [selectedDevice, activeVisualizers]);
 
   return (
-    <div>
-      {selectedDevice ? (
-        <canvas
-          ref={canvasRef}
-          width="800"
-          height="400"
-          style={{ border: '1px solid white', marginTop: '10px' }}
-        ></canvas>
-      ) : (
-        <p style={{ color: 'red', marginTop: '10px' }}>
-          Please select an audio input device to start the visualizer.
-        </p>
-      )}
-    </div>
+    <canvas
+      ref={canvasRef}
+      width="800"
+      height="400"
+      style={{ border: '1px solid white', marginTop: '10px' }}
+    ></canvas>
   );
 }
 

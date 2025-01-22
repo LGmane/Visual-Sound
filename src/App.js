@@ -1,34 +1,40 @@
 // src/App.js
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { AudioContext } from './components/AppLogic/AudioContextProvider';
 import DeviceSelector from './components/AppLogic/DeviceSelector';
 import VisualizerSelector from './components/AppLogic/VisualizerSelector';
 import MasterVisualizer from './components/AudioVisualizer/MasterVisualizer';
 
 function App() {
-  const context = useContext(AudioContext);
-  console.log('AudioContext in App:', context);
+  const { selectedDevice, setSelectedDevice } = useContext(AudioContext);
 
-  if (!context) {
-    console.error('AudioContext is undefined. Ensure AudioContextProvider wraps the component tree.');
-    return <div>Error: AudioContext is not available.</div>;
-  }
+  // State für aktive Visualisierer
+  const [activeVisualizers, setActiveVisualizers] = useState([]);
 
-  const { visualizerType, setVisualizerType, selectedDevice, setSelectedDevice } = context;
+  // Funktion zum Umschalten eines Visualisierers
+  const toggleVisualizer = (visualizerType) => {
+    setActiveVisualizers((prev) =>
+      prev.includes(visualizerType)
+        ? prev.filter((type) => type !== visualizerType) // Deaktivieren
+        : [...prev, visualizerType] // Aktivieren
+    );
+  };
 
   return (
     <div>
       <h1>Visual Sound</h1>
       <DeviceSelector onDeviceSelect={setSelectedDevice} />
       <VisualizerSelector
-        visualizerType={visualizerType}
-        onChange={setVisualizerType}
+        activeVisualizers={activeVisualizers}
+        toggleVisualizer={toggleVisualizer}
       />
-      <MasterVisualizer />
+      <MasterVisualizer activeVisualizers={activeVisualizers} />
     </div>
   );
 }
 
 export default App;
+
+
 
 

@@ -1,28 +1,33 @@
 // src/components/AppLogic/VisualizerSelector.js
 import React from 'react';
 
-function VisualizerSelector({ visualizerType, onChange }) {
-  // Debugging-Logs für die Props
-  console.log('VisualizerSelector - visualizerType:', visualizerType); // Zeigt den aktuellen Visualizer-Typ
-  console.log('VisualizerSelector - onChange prop:', onChange);       // Überprüft, ob onChange eine Funktion ist
+function VisualizerSelector({ activeVisualizers, toggleVisualizer }) {
+  const visualizers = [
+    { id: 'waveform', label: 'Waveform Visualizer' },
+    { id: 'frequency', label: 'Frequency Visualizer' },
+  ];
 
   return (
     <div>
-      <label htmlFor="visualizer-type">Select Visualizer:</label>
-      <select
-        id="visualizer-type"
-        value={visualizerType}
-        onChange={(e) => {
-          console.log('VisualizerSelector - onChange triggered:', e.target.value); // Zeigt das ausgewählte Visualizer-Typ
-          onChange(e.target.value); // Ruft die onChange-Funktion auf
-        }}
-      >
-        <option value="frequency">Frequency Visualizer</option>
-        <option value="waveform">Waveform Visualizer</option>
-      </select>
+      <h3>Select Visualizers:</h3>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        {visualizers.map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => toggleVisualizer(id)}
+            style={{
+              padding: '10px',
+              border: activeVisualizers.includes(id) ? '2px solid green' : '1px solid gray',
+              backgroundColor: activeVisualizers.includes(id) ? '#e0ffe0' : '#fff',
+              cursor: 'pointer',
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
 
 export default VisualizerSelector;
-
