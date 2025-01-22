@@ -12,3 +12,8 @@ body {
       monospace;
   }
   
+  canvas {
+    background-color: black;
+    border: 1px solid white; /* Optional, für den Rahmen */
+  }
+  
