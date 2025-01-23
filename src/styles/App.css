@@ -3,10 +3,18 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(38, 38, 38);
 }
 
 h1 {
   font-size: 2rem;
   margin: 20px 0;
   text-align: center;
+  color: rgb(255, 255, 255);
+}
+
+h3 {
+  margin: 20px 0;
+  text-align: center;
+  color: rgb(255, 255, 255);
 }

@@ -15,21 +15,21 @@
 
 .visualizer-button {
   padding: 10px 100px;
-  align-items: center;
   font-size: 1rem;
   font-weight: bold;
-  border: 2px solid black;
+  color: white;
+  border: 2px solid rgb(123, 123, 123);
   border-radius: 10px;
   cursor: pointer;
-  background-color: #ffffff00;
+  background-color: rgb(123, 123, 123);
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   outline: none;
 }
 
 .visualizer-button.active {
-  background-color: #003fdd74;
+  background-color: #decb04;
   color: black;
-  border-color: #0040DD;
+  border-color: #decb04;
   outline: none;
 }
 

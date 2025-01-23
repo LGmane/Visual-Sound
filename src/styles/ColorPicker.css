@@ -1,5 +1,7 @@
 .color-picker {
   margin-top: 20px;
+  color: white;
+  text-align: center;
 }
 
 .color-picker h3 {
@@ -29,13 +31,11 @@
   height: 40px;
   cursor: pointer;
   padding: 0;
-  background-color: transparent; /* Standard: transparente Hintergründe */
-  border-radius: 5px; /* Optional: Abgerundete Ecken */
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* Optional: Schattierung */
+  background-color: transparent;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
 }
 
 .color-picker__control input[type="color"]:hover {
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4); /* Effekt beim Hover */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
 }
-
-  

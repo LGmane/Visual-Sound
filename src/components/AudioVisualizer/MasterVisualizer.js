@@ -78,7 +78,8 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBa
         ref={canvasRef}
         width="800"
         height="400"
-        style={{ border: '1px solid white', marginTop: '10px' }}
+        align="center"
+        style={{ marginTop: '10px'}}
       ></canvas>
     </div>
   );

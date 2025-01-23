@@ -35,6 +35,12 @@ function App() {
   return (
     <div className="app">
       <h1>Visual Sound</h1>
+      <MasterVisualizer
+        activeVisualizers={activeVisualizers}
+        waveColor={waveColor}
+        frequencyColor={frequencyColor}
+        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
+      />
       <DeviceSelector onDeviceSelect={setSelectedDevice} />
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
@@ -48,12 +54,7 @@ function App() {
         frequencyColor={frequencyColor}
         setFrequencyColor={setFrequencyColor}
       />
-      <MasterVisualizer
-        activeVisualizers={activeVisualizers}
-        waveColor={waveColor}
-        frequencyColor={frequencyColor}
-        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
-      />
+      
     </div>
   );
 }
