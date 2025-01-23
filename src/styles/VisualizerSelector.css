@@ -1,37 +1,36 @@
-/* Container für die Visualizer-Auswahl */
 .visualizer-selector {
-    margin: 20px 0;
-  }
-  
-  /* Container für die Buttons */
-  .visualizer-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  /* Allgemeine Button-Stile */
-  .visualizer-button {
-    padding: 10px;
-    border: 1px solid gray;
-    background-color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-  }
-  
-  /* Aktive Buttons */
-  .visualizer-button.active {
-    border: 2px solid green;
-    background-color: #e0ffe0;
-  }
-  
-  /* Hintergrundvideo-Button (spezifischer Stil, wenn aktiv) */
-  .visualizer-button.active:nth-child(3) {
-    border: 2px solid blue;
-    background-color: #e0f0ff;
-  }
-  
-  /* Button-Hover-Effekt */
-  .visualizer-button:hover {
-    background-color: #f0f0f0;
-  }
+  margin: 20px 0;
+}
+
+.visualizer-selector h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.visualizer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.visualizer-button {
+  padding: 10px 100px;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #ffffff00;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  outline: none;
+}
+
+.visualizer-button.active {
+  background-color: #003fdd74;
+  color: black;
+  border-color: #0040DD;
+  outline: none;
+}
+
 

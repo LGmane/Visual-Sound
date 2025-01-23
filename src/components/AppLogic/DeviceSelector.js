@@ -31,7 +31,8 @@ function DeviceSelector({ onDeviceSelect }) {
 
   return (
     <div>
-      <label htmlFor="device-selector">Select Audio Input:</label>
+      <h3>Select Audio Input:</h3>
+      <label htmlFor="device-selector"></label>
       <select id="device-selector" onChange={handleDeviceChange}>
         {devices.map(device => (
           <option key={device.deviceId} value={device.deviceId}>
