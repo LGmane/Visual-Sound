@@ -160,12 +160,7 @@ function AudioVisualizer() {
         <button onClick={stopVisualizations}>Stop</button>
       </div>
 
-      <canvas
-        ref={canvasRef}
-        width="800"
-        height="400"
-        style={{ border: '1px solid white', marginTop: '10px' }}
-      ></canvas>
+      
     </div>
   );
 }
