@@ -18,6 +18,9 @@ function App() {
   const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Standard: Grün
   const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)'); // Standard: Rot
 
+  // Neuer Zustand für die mittige Darstellung des Frequency Visualizers
+  const [isFrequencyCentered, setIsFrequencyCentered] = useState(false);
+
   // Funktion zum Umschalten eines Visualisierers
   const toggleVisualizer = (visualizerType) => {
     setActiveVisualizers((prev) =>
@@ -32,6 +35,11 @@ function App() {
     setShowBackgroundVideo((prev) => !prev);
   };
 
+  // Funktion zum Umschalten der mittigen Darstellung
+  const toggleFrequencyCentered = () => {
+    setIsFrequencyCentered((prev) => !prev);
+  };
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -40,8 +48,8 @@ function App() {
         waveColor={waveColor}
         frequencyColor={frequencyColor}
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
+        isFrequencyCentered={isFrequencyCentered} // Neuer Zustand
       />
-      <DeviceSelector onDeviceSelect={setSelectedDevice} />
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
         toggleVisualizer={toggleVisualizer}
@@ -54,7 +62,12 @@ function App() {
         frequencyColor={frequencyColor}
         setFrequencyColor={setFrequencyColor}
       />
-      
+      <DeviceSelector onDeviceSelect={setSelectedDevice} />
+      <div style={{ marginTop: '20px' }}>
+        <button onClick={toggleFrequencyCentered}>
+          {isFrequencyCentered ? 'Frequency unten anzeigen' : 'Frequency mittig anzeigen'}
+        </button>
+      </div>
     </div>
   );
 }

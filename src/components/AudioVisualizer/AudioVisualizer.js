@@ -1,4 +1,4 @@
-// Import necessary React hooks and utilities
+// src/components/AudioVisualizer/AudioVisualizer.js
 import React, { useEffect, useState, useRef } from 'react';
 import { setupAudio } from '../utils/audioUtils'; // Utility for setting up audio
 import {
