@@ -4,7 +4,7 @@ import { AudioContext } from '../AppLogic/AudioContextProvider';
 import { Visualizers } from './configs';
 import { setupAudio } from '../../utils/audioUtils';
 
-function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered }) {
+function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered, barWidth }) {
   const { selectedDevice } = useContext(AudioContext);
   const canvasRef = useRef(null);
   const videoRef = useRef(null); // Ref für das Video
@@ -47,7 +47,8 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBa
             const options = {
               waveColor,
               frequencyColor,
-              centered: visualizerType === 'frequency' && isFrequencyCentered, // Aktiviere `centered` für FrequencyVisualizer, wenn gewünscht
+              centered: visualizerType === 'frequency' && isFrequencyCentered, // Aktiviere `centered` für FrequencyVisualizer
+              barWidth, // Übergibt die Balkenbreite
             };
 
             Visualizers[visualizerType](canvas, analyser, dataArray, options);
@@ -65,7 +66,7 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBa
     return () => {
       animationActive = false;
     };
-  }, [selectedDevice, activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered]);
+  }, [selectedDevice, activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered, barWidth]);
 
   return (
     <div className="visualizer-container">

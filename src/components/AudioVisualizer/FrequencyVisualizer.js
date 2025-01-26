@@ -1,5 +1,4 @@
-// src/components/AudioVisualizer/FrequencyVisualizer.js
-export default function FrequencyVisualizer(canvas, analyser, dataArray, { frequencyColor, centered = false }) {
+export default function FrequencyVisualizer(canvas, analyser, dataArray, { frequencyColor, centered = false, barWidth = 2 }) {
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('FrequencyVisualizer: Invalid canvas element');
     return;
@@ -16,20 +15,23 @@ export default function FrequencyVisualizer(canvas, analyser, dataArray, { frequ
   const canvasCtx = canvas.getContext('2d');
   analyser.getByteFrequencyData(dataArray);
 
-  const barWidth = (canvas.width / dataArray.length) * 1.5; // Berechne Balkenbreite
+  // Breite der Balken durch `barWidth` steuern
+  const numberOfBars = Math.floor(canvas.width / (barWidth + 1));
+  const step = Math.ceil(dataArray.length / numberOfBars);
+
+  console.log('Calculated barWidth:', barWidth, 'Number of bars:', numberOfBars);
+
   let x = 0;
 
-  for (let i = 0; i < dataArray.length; i++) {
+  for (let i = 0; i < dataArray.length; i += step) {
     const barHeight = dataArray[i] / 2;
-    canvasCtx.fillStyle = frequencyColor || 'rgb(255, 0, 0)'; // Standardfarbe
+    canvasCtx.fillStyle = frequencyColor || 'rgb(255, 0, 0)';
 
     if (centered) {
-      // Mittig zentriert mit Spiegelung
       const centerY = canvas.height / 2;
-      canvasCtx.fillRect(x, centerY - barHeight, barWidth, barHeight); // Nach oben
-      canvasCtx.fillRect(x, centerY, barWidth, barHeight); // Nach unten
+      canvasCtx.fillRect(x, centerY - barHeight, barWidth, barHeight);
+      canvasCtx.fillRect(x, centerY, barWidth, barHeight);
     } else {
-      // Standard unten
       canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
     }
 

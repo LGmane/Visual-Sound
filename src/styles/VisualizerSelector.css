@@ -1,39 +1,98 @@
+/* ----------------------- */
+/* VISUALIZER SELECTOR CSS */
+/* ----------------------- */
+
+/* Container für die Visualizer-Buttons */
 .visualizer-buttons {
-  display: flex;
-  flex-wrap: nowrap; /* Kein Umbruch der Haupt-Buttons */
-  gap: 10px;
+  display: flex; /* Buttons in einer horizontalen Reihe anzeigen */
+  flex-wrap: nowrap; /* Kein Zeilenumbruch der Buttons */
+  gap: 10px; /* Abstand zwischen den Buttons */
   align-items: flex-start; /* Buttons linksbündig ausrichten */
 }
 
+/* Grundlegendes Styling für die Buttons */
 .visualizer-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: white;
-  border: 2px solid rgb(123, 123, 123);
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: rgb(123, 123, 123);
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-  outline: none;
-  min-width: 150px; /* Einheitliche Breite */
-  min-height: 50px; /* Einheitliche Höhe */
+  display: flex; /* Flexbox für zentrierten Inhalt */
+  justify-content: center; /* Horizontale Zentrierung des Texts im Button */
+  align-items: center; /* Vertikale Zentrierung des Texts im Button */
+  padding: 10px 20px; /* Innenabstand: oben/unten 10px, links/rechts 20px */
+  font-size: 1rem; /* Schriftgröße */
+  font-weight: bold; /* Fettschrift */
+  color: white; /* Textfarbe */
+  border: 2px solid rgb(123, 123, 123); /* Rahmenfarbe */
+  border-radius: 10px; /* Abgerundete Ecken */
+  cursor: pointer; /* Zeigt Zeiger beim Hover an */
+  background-color: rgb(123, 123, 123); /* Standard-Hintergrundfarbe */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Weiche Übergänge bei Farbänderungen */
+  outline: none; /* Kein Standard-Fokusrahmen */
+  min-width: 150px; /* Einheitliche Mindestbreite der Buttons */
+  min-height: 50px; /* Einheitliche Mindesthöhe der Buttons */
 }
 
+/* Styling für aktive Buttons */
 .visualizer-button.active {
-  background-color: #decb04;
-  color: black;
-  border-color: #decb04;
+  background-color: #decb04; /* Gelbe Hintergrundfarbe für aktiven Zustand */
+  color: black; /* Schwarze Textfarbe */
+  border-color: #decb04; /* Gelbe Rahmenfarbe */
 }
 
+/* Gruppierung von Buttons (z. B. vertikale Anordnung) */
 .visualizer-button-group {
-  display: flex;
-  flex-direction: column; /* Elemente innerhalb der Gruppe vertikal stapeln */
+  display: flex; /* Flexbox für Layout */
+  flex-direction: column; /* Buttons innerhalb der Gruppe vertikal stapeln */
 }
 
+/* Abstand zwischen Buttons innerhalb einer Gruppe */
 .visualizer-button-group .visualizer-button + .visualizer-button {
-  margin-top: 5px; /* Abstand zwischen Buttons innerhalb der Gruppe */
+  margin-top: 5px; /* 5px Abstand nach oben zwischen Buttons */
+}
+
+/* ----------------------- */
+/* SLIDER STYLING */
+/* ----------------------- */
+
+/* Container für den Slider */
+.bar-width-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.bar-width-slider label {
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 10px; /* Abstand zwischen Label und Slider */
+}
+
+/* Einfaches Styling für den Slider */
+.simple-slider {
+  width: 150px; /* Genauso breit wie die Buttons */
+  height: 6px; /* Höhe der Schiene */
+  -webkit-appearance: none; /* Standard-Styling entfernen (WebKit-Browser) */
+  appearance: none; /* Standard-Styling entfernen (moderne Browser) */
+  background: #4a4a4a; /* Dunkelgraue Schiene */
+  border-radius: 5px; /* Runde Ecken */
+  outline: none; /* Fokusrahmen entfernen */
+  cursor: pointer;
+}
+
+/* Thumb (Schieberegler) */
+.simple-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Standard-Styling entfernen */
+  appearance: none;
+  width: 16px; /* Breite des Thumbs */
+  height: 16px; /* Höhe des Thumbs */
+  background: #ffffff; /* Weiße Farbe */
+  border-radius: 50%; /* Runde Form */
+  cursor: pointer;
+  border: 1px solid #4a4a4a; /* Dünner, dunkler Rand */
+}
+
+.simple-slider::-webkit-slider-thumb:hover {
+  background: #f1f1f1; /* Heller beim Hover */
+}
+
+.simple-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5); /* Gelber Fokusrahmen */
 }

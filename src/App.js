@@ -21,6 +21,9 @@ function App() {
   // Neuer Zustand für die mittige Darstellung des Frequency Visualizers
   const [isFrequencyCentered, setIsFrequencyCentered] = useState(false);
 
+  // Zustand für Balkenbreite (zwischen 1 und 10)
+  const [barWidth, setBarWidth] = useState(2);
+
   // Funktion zum Umschalten eines Visualisierers
   const toggleVisualizer = (visualizerType) => {
     setActiveVisualizers((prev) =>
@@ -40,6 +43,11 @@ function App() {
     setIsFrequencyCentered((prev) => !prev);
   };
 
+  // Funktion zur Änderung der Balkenbreite
+  const handleBarWidthChange = (event) => {
+    setBarWidth(parseInt(event.target.value, 10));
+  };
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -49,6 +57,7 @@ function App() {
         frequencyColor={frequencyColor}
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
         isFrequencyCentered={isFrequencyCentered} // Neuer Zustand
+        barWidth={barWidth} // Balkenbreite
       />
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
@@ -57,6 +66,8 @@ function App() {
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
         toggleFrequencyCentered={toggleFrequencyCentered} // Neue Prop
         isFrequencyCentered={isFrequencyCentered} // Neue Prop
+        barWidth={barWidth} // Balkenbreite
+        handleBarWidthChange={handleBarWidthChange} // Slider
       />
       <ColorPicker
         waveColor={waveColor}
