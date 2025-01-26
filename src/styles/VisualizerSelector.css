@@ -25,15 +25,15 @@
   background-color: rgb(123, 123, 123); /* Standard-Hintergrundfarbe */
   transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Weiche Übergänge bei Farbänderungen */
   outline: none; /* Kein Standard-Fokusrahmen */
-  min-width: 150px; /* Einheitliche Mindestbreite der Buttons */
+  width: 250px; /* Einheitliche Mindestbreite der Buttons */
   min-height: 50px; /* Einheitliche Mindesthöhe der Buttons */
 }
 
 /* Styling für aktive Buttons */
 .visualizer-button.active {
-  background-color: #decb04; /* Gelbe Hintergrundfarbe für aktiven Zustand */
+  background-color: yellow; /* Gelbe Hintergrundfarbe für aktiven Zustand */
   color: black; /* Schwarze Textfarbe */
-  border-color: #decb04; /* Gelbe Rahmenfarbe */
+  border-color: yellow; /* Gelbe Rahmenfarbe */
 }
 
 /* Gruppierung von Buttons (z. B. vertikale Anordnung) */
@@ -45,6 +45,11 @@
 /* Abstand zwischen Buttons innerhalb einer Gruppe */
 .visualizer-button-group .visualizer-button + .visualizer-button {
   margin-top: 5px; /* 5px Abstand nach oben zwischen Buttons */
+}
+
+
+.visualizer-button-group .visualizer-button:last-child {
+  margin-top: 20px; /* Abstand nur für den letzten Button in der Gruppe */
 }
 
 /* ----------------------- */
@@ -96,3 +101,48 @@
 .simple-slider:focus::-webkit-slider-thumb {
   box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5); /* Gelber Fokusrahmen */
 }
+
+/* ------------------- */
+/* VERTIKALER COLOR-PICKER */
+/* ------------------- */
+
+/* Farbauswahl-Button */
+/* Farbauswahl-Button */
+.color-picker-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 250px; /* Gleiche Breite wie andere Buttons */
+  height: 50px; /* Gleiche Höhe wie andere Buttons */
+  background-color: #4a4a4a; /* Neutraler Hintergrund */
+  border: none; /* Kein Rand */
+  border-radius: 10px; /* Gleiche abgerundete Ecken */
+  overflow: hidden; /* Begrenze Inhalte innerhalb des Buttons */
+  cursor: pointer; /* Zeiger-Cursor */
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  margin-top: 5px; /* Abstand zum vorherigen Element */
+  border: 2px solid yellow;
+}
+
+.color-picker-button:hover {
+  background-color: #6a6a6a; /* Hellerer Hintergrund beim Hover */
+  
+}
+
+/* Farbsegmente innerhalb des Buttons */
+.color-segment {
+  flex: 1; /* Segment gleichmäßig verteilen */
+  height: 100%; /* Volle Höhe des Buttons */
+  transition: flex 0.3s ease-in-out, flex 0.3s ease-in-out; /* Sanfte Animation bei Größenänderung */
+}
+
+/* Vergrößerung für die ausgewählte Farbe */
+.color-segment:hover {
+  transform: scale(1.1); /* Vergrößern auf 1.5-fache Größe */
+  transition: transform 0.2s ease-in-out, flex 0.1s ease-in-out; /* Sanfte Übergänge */
+}
+
+.color-segment.selected {
+  flex: 3; /* Doppelte Größe der ausgewählten Farbe */
+}
+

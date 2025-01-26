@@ -4,7 +4,6 @@ import { AudioContext } from './components/AppLogic/AudioContextProvider';
 import DeviceSelector from './components/AppLogic/DeviceSelector';
 import VisualizerSelector from './components/AppLogic/VisualizerSelector';
 import MasterVisualizer from './components/AudioVisualizer/MasterVisualizer';
-import ColorPicker from './components/AppLogic/ColorPicker';
 import './styles/App.css';
 
 function App() {
@@ -56,6 +55,11 @@ function App() {
     setWaveformThickness(value);
   };
 
+  const handleFrequencyColorChange = (color) => {
+    console.log('Frequency color selected:', color); // Debugging
+    setFrequencyColor(color); // State aktualisieren
+  };
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -71,21 +75,20 @@ function App() {
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
         toggleVisualizer={toggleVisualizer}
-        toggleBackgroundVideo={toggleBackgroundVideo} // Übergebe die Funktion
-        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
-        toggleFrequencyCentered={toggleFrequencyCentered} // Neue Prop
-        isFrequencyCentered={isFrequencyCentered} // Neue Prop
-        barWidth={barWidth} // Balkenbreite
-        handleBarWidthChange={handleBarWidthChange} // Slider für Bar Width
-        waveformThickness={waveformThickness} // Wellenlinien-Dicke
-        handleWaveformThicknessChange={handleWaveformThicknessChange} // Slider für Waveform Thickness
+        toggleBackgroundVideo={toggleBackgroundVideo}
+        showBackgroundVideo={showBackgroundVideo}
+        toggleFrequencyCentered={toggleFrequencyCentered}
+        isFrequencyCentered={isFrequencyCentered}
+        barWidth={barWidth}
+        handleBarWidthChange={handleBarWidthChange}
+        waveformThickness={waveformThickness}
+        handleWaveformThicknessChange={handleWaveformThicknessChange}
+        waveformColor={waveColor} // Wellenfarbe übergeben
+        handleWaveformColorChange={setWaveColor} // Wellenfarbe ändern
+        frequencyColor={frequencyColor} // Frequenzfarbe übergeben
+        handleFrequencyColorChange={handleFrequencyColorChange} // Frequenzfarbe ändern
       />
-      <ColorPicker
-        waveColor={waveColor}
-        setWaveColor={setWaveColor}
-        frequencyColor={frequencyColor}
-        setFrequencyColor={setFrequencyColor}
-      />
+
       <DeviceSelector onDeviceSelect={setSelectedDevice} />
     </div>
   );
