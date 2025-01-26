@@ -40,6 +40,7 @@
 .visualizer-button-group {
   display: flex; /* Flexbox für Layout */
   flex-direction: column; /* Buttons innerhalb der Gruppe vertikal stapeln */
+  gap: 10px; /* Abstand zwischen den Buttons */
 }
 
 /* Abstand zwischen Buttons innerhalb einer Gruppe */
@@ -48,9 +49,7 @@
 }
 
 
-.visualizer-button-group .visualizer-button:last-child {
-  margin-top: 20px; /* Abstand nur für den letzten Button in der Gruppe */
-}
+
 
 /* ----------------------- */
 /* SLIDER STYLING */
