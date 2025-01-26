@@ -1,5 +1,5 @@
-// src/components/AppLogic/DeviceSelector.js
 import React, { useState, useEffect } from 'react';
+import '../../styles/DeviceSelector.css';
 
 function DeviceSelector({ onDeviceSelect }) {
   const [devices, setDevices] = useState([]);
@@ -8,11 +8,10 @@ function DeviceSelector({ onDeviceSelect }) {
     const fetchDevices = async () => {
       try {
         const deviceList = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = deviceList.filter(device => device.kind === 'audioinput');
+        const audioDevices = deviceList.filter((device) => device.kind === 'audioinput');
         setDevices(audioDevices);
 
         if (audioDevices.length > 0) {
-          console.log('Automatically selecting the first device:', audioDevices[0].deviceId);
           onDeviceSelect(audioDevices[0].deviceId); // Automatische Auswahl des ersten Geräts
         }
       } catch (error) {
@@ -25,16 +24,14 @@ function DeviceSelector({ onDeviceSelect }) {
 
   const handleDeviceChange = (event) => {
     const selectedDeviceId = event.target.value;
-    console.log('User selected device ID:', selectedDeviceId);
     onDeviceSelect(selectedDeviceId);
   };
 
   return (
-    <div>
-      <h3>Select Audio Input:</h3>
-      <label htmlFor="device-selector"></label>
+    <div className="device-selector">
+      <label htmlFor="device-selector">Select Audio Input:</label>
       <select id="device-selector" onChange={handleDeviceChange}>
-        {devices.map(device => (
+        {devices.map((device) => (
           <option key={device.deviceId} value={device.deviceId}>
             {device.label || `Device ${device.deviceId}`}
           </option>
@@ -45,4 +42,3 @@ function DeviceSelector({ onDeviceSelect }) {
 }
 
 export default DeviceSelector;
-

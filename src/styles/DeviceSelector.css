@@ -1,0 +1,59 @@
+/* ----------------------- */
+/* DEVICE SELECTOR CSS */
+/* ----------------------- */
+
+.device-selector {
+    display: flex;
+    flex-direction: column; /* Vertikale Anordnung von Label und Dropdown */
+    align-items: center; /* Zentriert Label und Dropdown horizontal */
+    gap: 10px; /* Abstand zwischen Label und Dropdown */
+    margin-top: 20px; /* Abstand nach oben */
+  }
+  
+  .device-selector label {
+    font-size: 1.2rem; /* Gleiche Schriftgröße wie Visualizer Selector */
+    font-weight: bold;
+    color: white; /* Weiße Schrift */
+    text-align: center; /* Text des Labels zentrieren */
+    margin-bottom: 5px; /* Abstand zum Dropdown */
+  }
+  
+  .device-selector select {
+    -webkit-appearance: none; /* Entfernt Standard-Styling */
+    appearance: none;
+    background-color: rgb(123, 123, 123); /* Gleiche Hintergrundfarbe wie Buttons */
+    color: white; /* Weiße Schrift */
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 20px; /* Gleiche Innenabstände wie Buttons */
+    border: 2px solid rgb(123, 123, 123); /* Gleicher Rahmen wie Buttons */
+    border-radius: 10px; /* Abgerundete Ecken */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Weiche Übergänge */
+    min-width: 150px; /* Einheitliche Breite */
+    min-height: 50px; /* Einheitliche Höhe */
+    text-align: center; /* Text im Dropdown zentrieren */
+  }
+  
+  .device-selector select:hover {
+    background-color: #decb04; /* Gelbe Hintergrundfarbe beim Hover */
+    color: black; /* Schwarze Schrift beim Hover */
+    border-color: #decb04; /* Gelber Rahmen beim Hover */
+  }
+  
+  .device-selector select:focus {
+    background-color: #decb04; /* Gleiche Hintergrundfarbe wie im Standardzustand */
+    border-color: #decb04; /* Gelber Rahmen bleibt beim Fokussieren */
+    color: rgb(0, 0, 0); /* Weiße Schrift bleibt */
+    outline: none; /* Kein Standard-Fokusrahmen */
+  }
+  
+  .device-selector::after {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; /* Pfeil ignoriert Klicks */
+    color: white;
+    font-size: 0.8rem;
+  }
