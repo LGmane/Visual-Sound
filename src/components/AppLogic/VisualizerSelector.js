@@ -10,6 +10,8 @@ function VisualizerSelector({
   isFrequencyCentered,
   barWidth,
   handleBarWidthChange,
+  waveformThickness,
+  handleWaveformThicknessChange,
 }) {
   const visualizers = [
     { id: 'waveform', label: 'Waveform Visualizer' },
@@ -46,6 +48,22 @@ function VisualizerSelector({
                     max="10"
                     value={barWidth}
                     onChange={handleBarWidthChange}
+                  />
+                </div>
+              </>
+            )}
+            {id === 'waveform' && activeVisualizers.includes('waveform') && (
+              <>
+                <div className="bar-width-slider">
+                  <label htmlFor="waveform-thickness">Waveform Thickness: {waveformThickness}</label>
+                  <input
+                    type="range"
+                    id="waveform-thickness"
+                    className="simple-slider"
+                    min="1"
+                    max="10"
+                    value={waveformThickness}
+                    onChange={(event) => handleWaveformThicknessChange(parseInt(event.target.value, 10))}
                   />
                 </div>
               </>

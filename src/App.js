@@ -24,6 +24,9 @@ function App() {
   // Zustand für Balkenbreite (zwischen 1 und 10)
   const [barWidth, setBarWidth] = useState(2);
 
+  // Zustand für die Dicke der Wellenlinien
+  const [waveformThickness, setWaveformThickness] = useState(2);
+
   // Funktion zum Umschalten eines Visualisierers
   const toggleVisualizer = (visualizerType) => {
     setActiveVisualizers((prev) =>
@@ -48,6 +51,11 @@ function App() {
     setBarWidth(parseInt(event.target.value, 10));
   };
 
+  // Funktion zur Änderung der Waveform-Dicke
+  const handleWaveformThicknessChange = (value) => {
+    setWaveformThickness(value);
+  };
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -58,6 +66,7 @@ function App() {
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
         isFrequencyCentered={isFrequencyCentered} // Neuer Zustand
         barWidth={barWidth} // Balkenbreite
+        waveformThickness={waveformThickness} // Wellenlinien-Dicke
       />
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
@@ -67,7 +76,9 @@ function App() {
         toggleFrequencyCentered={toggleFrequencyCentered} // Neue Prop
         isFrequencyCentered={isFrequencyCentered} // Neue Prop
         barWidth={barWidth} // Balkenbreite
-        handleBarWidthChange={handleBarWidthChange} // Slider
+        handleBarWidthChange={handleBarWidthChange} // Slider für Bar Width
+        waveformThickness={waveformThickness} // Wellenlinien-Dicke
+        handleWaveformThicknessChange={handleWaveformThicknessChange} // Slider für Waveform Thickness
       />
       <ColorPicker
         waveColor={waveColor}

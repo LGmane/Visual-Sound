@@ -1,5 +1,4 @@
-// src/components/AudioVisualizer/WaveformVisualizer.js
-export default function WaveformVisualizer(canvas, analyser, dataArray, { waveColor }) {
+export default function WaveformVisualizer(canvas, analyser, dataArray, { waveColor, thickness = 2 }) {
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('WaveformVisualizer: Invalid canvas element');
     return;
@@ -16,8 +15,8 @@ export default function WaveformVisualizer(canvas, analyser, dataArray, { waveCo
   const canvasCtx = canvas.getContext('2d');
   analyser.getByteTimeDomainData(dataArray);
 
-  canvasCtx.lineWidth = 2;
-  canvasCtx.strokeStyle = waveColor || 'rgb(0, 255, 0)'; // Fallback-Farbe verwenden
+  canvasCtx.lineWidth = thickness; // Dicke der Linie steuern
+  canvasCtx.strokeStyle = waveColor || 'rgb(0, 255, 0)'; // Standard: Grün
   canvasCtx.beginPath();
 
   const sliceWidth = canvas.width / dataArray.length;
@@ -39,7 +38,3 @@ export default function WaveformVisualizer(canvas, analyser, dataArray, { waveCo
   canvasCtx.lineTo(canvas.width, canvas.height / 2);
   canvasCtx.stroke();
 }
-
-
-
-  

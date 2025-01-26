@@ -4,7 +4,15 @@ import { AudioContext } from '../AppLogic/AudioContextProvider';
 import { Visualizers } from './configs';
 import { setupAudio } from '../../utils/audioUtils';
 
-function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered, barWidth }) {
+function MasterVisualizer({
+  activeVisualizers,
+  waveColor,
+  frequencyColor,
+  showBackgroundVideo,
+  isFrequencyCentered,
+  barWidth,
+  waveformThickness,
+}) {
   const { selectedDevice } = useContext(AudioContext);
   const canvasRef = useRef(null);
   const videoRef = useRef(null); // Ref für das Video
@@ -41,19 +49,22 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBa
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // Zeichne die aktiven Visualizer
-        activeVisualizers.forEach((visualizerType) => {
-          if (Visualizers[visualizerType]) {
-            const options = {
-              waveColor,
-              frequencyColor,
-              centered: visualizerType === 'frequency' && isFrequencyCentered, // Aktiviere `centered` für FrequencyVisualizer
-              barWidth, // Übergibt die Balkenbreite
-            };
+        // Zeichne zuerst den Frequency Visualizer
+        if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
+          Visualizers['frequency'](canvas, analyser, dataArray, {
+            frequencyColor,
+            centered: isFrequencyCentered,
+            barWidth,
+          });
+        }
 
-            Visualizers[visualizerType](canvas, analyser, dataArray, options);
-          }
-        });
+        // Zeichne danach den Waveform Visualizer
+        if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
+          Visualizers['waveform'](canvas, analyser, dataArray, {
+            waveColor,
+            thickness: waveformThickness,
+          });
+        }
 
         requestAnimationFrame(renderFrame);
       };
@@ -66,7 +77,16 @@ function MasterVisualizer({ activeVisualizers, waveColor, frequencyColor, showBa
     return () => {
       animationActive = false;
     };
-  }, [selectedDevice, activeVisualizers, waveColor, frequencyColor, showBackgroundVideo, isFrequencyCentered, barWidth]);
+  }, [
+    selectedDevice,
+    activeVisualizers,
+    waveColor,
+    frequencyColor,
+    showBackgroundVideo,
+    isFrequencyCentered,
+    barWidth,
+    waveformThickness,
+  ]);
 
   return (
     <div className="visualizer-container">
