@@ -1,20 +1,15 @@
-.visualizer-selector {
-  margin: 20px 0;
-}
-
-.visualizer-selector h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
 .visualizer-buttons {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Kein Umbruch der Haupt-Buttons */
   gap: 10px;
+  align-items: flex-start; /* Buttons linksbündig ausrichten */
 }
 
 .visualizer-button {
-  padding: 10px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
   font-size: 1rem;
   font-weight: bold;
   color: white;
@@ -24,13 +19,21 @@
   background-color: rgb(123, 123, 123);
   transition: background-color 0.3s, color 0.3s, border-color 0.3s;
   outline: none;
+  min-width: 150px; /* Einheitliche Breite */
+  min-height: 50px; /* Einheitliche Höhe */
 }
 
 .visualizer-button.active {
   background-color: #decb04;
   color: black;
   border-color: #decb04;
-  outline: none;
 }
 
+.visualizer-button-group {
+  display: flex;
+  flex-direction: column; /* Elemente innerhalb der Gruppe vertikal stapeln */
+}
 
+.visualizer-button-group .visualizer-button + .visualizer-button {
+  margin-top: 5px; /* Abstand zwischen Buttons innerhalb der Gruppe */
+}

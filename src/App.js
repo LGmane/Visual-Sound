@@ -55,6 +55,8 @@ function App() {
         toggleVisualizer={toggleVisualizer}
         toggleBackgroundVideo={toggleBackgroundVideo} // Übergebe die Funktion
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
+        toggleFrequencyCentered={toggleFrequencyCentered} // Neue Prop
+        isFrequencyCentered={isFrequencyCentered} // Neue Prop
       />
       <ColorPicker
         waveColor={waveColor}
@@ -63,11 +65,6 @@ function App() {
         setFrequencyColor={setFrequencyColor}
       />
       <DeviceSelector onDeviceSelect={setSelectedDevice} />
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={toggleFrequencyCentered}>
-          {isFrequencyCentered ? 'Frequency unten anzeigen' : 'Frequency mittig anzeigen'}
-        </button>
-      </div>
     </div>
   );
 }
