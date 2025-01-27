@@ -5,55 +5,19 @@ export function normalize(value, max = 255) {
 
 // Calculate volume (RMS) efficiently
 export function calculateVolume(dataArray) {
-  let sumSquares = 0;
-  const length = dataArray.length;
-
-  for (let i = 0; i < length; i++) {
-    const centeredValue = dataArray[i] - 128;
-    sumSquares += centeredValue * centeredValue;
-  }
-
-  return Math.sqrt(sumSquares / length) / 128; // Normalization [0, 1]
-}
-
-// Calculate bass energy (average of low frequencies)
-export function calculateBassEnergy(frequencyData, bins = 10) {
   let sum = 0;
-  bins = Math.min(bins, frequencyData.length); // Ensure bins don't exceed array length
-
-  for (let i = 0; i < bins; i++) {
-    sum += frequencyData[i];
+  for (let i = 0; i < dataArray.length; i++) {
+    sum += Math.pow(dataArray[i] - 128, 2);
   }
-
-  return sum / bins;
+  return Math.sqrt(sum / dataArray.length) / 128; // Normalisiert zwischen 0 und 1
 }
 
 // Calculate peak hold logic (with decay)
-export function calculatePeak(currentValue, peakValue, decay = 5) {
-  return currentValue > peakValue ? currentValue : Math.max(peakValue - decay, 0);
-}
-
-// Generic RMS calculation
-export function calculateRMS(dataArray, reference = 128) {
-  let sumSquares = 0;
-  const length = dataArray.length;
-
-  for (let i = 0; i < length; i++) {
-    const centeredValue = dataArray[i] - reference;
-    sumSquares += centeredValue * centeredValue;
+export function calculatePeak(currentValue, peakValue, decay = 4) {
+  // Wenn die aktuelle Lautstärke höher ist als der Peak, aktualisiere den Peak
+  if (currentValue > peakValue) {
+    return currentValue;
   }
-
-  return Math.sqrt(sumSquares / length);
-}
-
-// Calculate average for a subset of an array efficiently
-export function calculateAverage(dataArray, startIndex = 0, endIndex = dataArray.length) {
-  let sum = 0;
-  endIndex = Math.min(endIndex, dataArray.length); // Ensure endIndex is within bounds
-
-  for (let i = startIndex; i < endIndex; i++) {
-    sum += dataArray[i];
-  }
-
-  return sum / (endIndex - startIndex);
+  // Lasse den Peak langsam sinken
+  return Math.max(peakValue - decay, 0); // Verhindere negative Werte
 }

@@ -1,0 +1,6 @@
+/* Lautstärke-Balken-Visualizer */
+.visualizer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }

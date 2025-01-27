@@ -60,6 +60,8 @@ function App() {
     setFrequencyColor(color); // State aktualisieren
   };
 
+  const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)'); // Standard: Blau
+
   return (
     <div className="app">
       <h1>Visual Sound</h1>
@@ -67,6 +69,7 @@ function App() {
         activeVisualizers={activeVisualizers}
         waveColor={waveColor}
         frequencyColor={frequencyColor}
+        volumeColor={volumeColor} // Neue Prop
         showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
         isFrequencyCentered={isFrequencyCentered} // Neuer Zustand
         barWidth={barWidth} // Balkenbreite
@@ -87,6 +90,8 @@ function App() {
         handleWaveformColorChange={setWaveColor} // Wellenfarbe ändern
         frequencyColor={frequencyColor} // Frequenzfarbe übergeben
         handleFrequencyColorChange={handleFrequencyColorChange} // Frequenzfarbe ändern
+        volumeColor={volumeColor} // Volume-Farbe hinzufügen
+        handleVolumeColorChange={setVolumeColor} // State-Setter für Volume-Farbe
       />
 
       <DeviceSelector onDeviceSelect={setSelectedDevice} />

@@ -8,6 +8,7 @@ function MasterVisualizer({
   activeVisualizers,
   waveColor,
   frequencyColor,
+  volumeColor, // Neu hinzugefügt
   showBackgroundVideo,
   isFrequencyCentered,
   barWidth,
@@ -40,7 +41,7 @@ function MasterVisualizer({
 
         const canvasCtx = canvas.getContext('2d');
 
-        // Zeichne das Video als Hintergrund, wenn es aktiviert ist
+        // 1. Zeichne das Hintergrundvideo, wenn es aktiviert ist
         if (video && showBackgroundVideo && video.readyState >= 2) {
           canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         } else {
@@ -49,22 +50,22 @@ function MasterVisualizer({
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // Zeichne zuerst den Frequency Visualizer
-        if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
-          Visualizers['frequency'](canvas, analyser, dataArray, {
-            frequencyColor,
-            centered: isFrequencyCentered,
-            barWidth,
-          });
-        }
+        // 2. Zeichne die aktiven Visualizer
+        activeVisualizers.forEach((visualizerType) => {
+          if (Visualizers[visualizerType]) {
+            const options = {
+              waveColor,
+              frequencyColor,
+              volumeColor, // Übergibt die Farbe für den VolumeVisualizer
+              centered: visualizerType === 'frequency' && isFrequencyCentered,
+              barWidth,
+              thickness: waveformThickness,
+            };
 
-        // Zeichne danach den Waveform Visualizer
-        if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
-          Visualizers['waveform'](canvas, analyser, dataArray, {
-            waveColor,
-            thickness: waveformThickness,
-          });
-        }
+            // Ruft den entsprechenden Visualizer auf
+            Visualizers[visualizerType](canvas, analyser, dataArray, options);
+          }
+        });
 
         requestAnimationFrame(renderFrame);
       };
@@ -82,6 +83,7 @@ function MasterVisualizer({
     activeVisualizers,
     waveColor,
     frequencyColor,
+    volumeColor, // Neu hinzugefügt
     showBackgroundVideo,
     isFrequencyCentered,
     barWidth,
