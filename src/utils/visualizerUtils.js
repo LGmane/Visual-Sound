@@ -55,3 +55,30 @@ export function drawFrequencySpectrum(canvas, analyser) {
   }
 }
 
+// src/utils/visualizerUtils.js
+
+/**
+ * Draws a volume bar and peak indicator.
+ * @param {HTMLCanvasElement} canvas - The canvas element.
+ * @param {number} volume - The normalized volume (0 to 1).
+ * @param {number} peak - The peak value (0 to 1).
+ */
+export function drawVolumeBar(canvas, volume, peak) {
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width;
+  const height = canvas.height;
+
+  // Hintergrund
+  ctx.fillStyle = 'black';
+  ctx.fillRect(0, 0, width, height);
+
+  // Volumen-Balken
+  const barHeight = height * volume;
+  ctx.fillStyle = 'rgb(0, 255, 0)';
+  ctx.fillRect(width / 4, height - barHeight, width / 2, barHeight);
+
+  // Peak-Indikator
+  const peakPosition = height - height * peak;
+  ctx.fillStyle = 'rgb(255, 0, 0)';
+  ctx.fillRect(width / 4, peakPosition - 2, width / 2, 4); // Peak-Bar
+}

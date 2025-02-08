@@ -50,22 +50,31 @@ function MasterVisualizer({
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // 2. Zeichne die aktiven Visualizer
-        activeVisualizers.forEach((visualizerType) => {
-          if (Visualizers[visualizerType]) {
-            const options = {
-              waveColor,
-              frequencyColor,
-              volumeColor, // Übergibt die Farbe für den VolumeVisualizer
-              centered: visualizerType === 'frequency' && isFrequencyCentered,
-              barWidth,
-              thickness: waveformThickness,
-            };
+        // 🔹 2. Zeichne die aktiven Visualizer in der richtigen Reihenfolge
 
-            // Ruft den entsprechenden Visualizer auf
-            Visualizers[visualizerType](canvas, analyser, dataArray, options);
-          }
-        });
+        // 2.1 Zuerst den Frequency-Visualizer (Hintergrund)
+        if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
+          Visualizers['frequency'](canvas, analyser, dataArray, {
+            frequencyColor,
+            centered: isFrequencyCentered,
+            barWidth,
+          });
+        }
+
+        // 2.2 Danach den Waveform-Visualizer (Vordergrund)
+        if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
+          Visualizers['waveform'](canvas, analyser, dataArray, {
+            waveColor,
+            thickness: waveformThickness,
+          });
+        }
+
+        // 2.3 Danach den Volume-Visualizer (falls aktiv)
+        if (activeVisualizers.includes('volume') && Visualizers['volume']) {
+          Visualizers['volume'](canvas, analyser, dataArray, {
+            volumeColor,
+          });
+        }
 
         requestAnimationFrame(renderFrame);
       };

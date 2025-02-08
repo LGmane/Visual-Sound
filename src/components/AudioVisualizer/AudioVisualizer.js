@@ -69,7 +69,6 @@ function AudioVisualizer() {
       const targetFPS = 60; // Maximal 60 FPS
       // Render function
       function renderFrame(currentTime) {
-
         const timeSinceLastRender = currentTime - lastRenderTime;
         if (timeSinceLastRender < 1000 / targetFPS) {
           requestAnimationFrame(renderFrame);
@@ -87,9 +86,18 @@ function AudioVisualizer() {
         const volume = calculateVolume(dataArrayRef.current);
         volumePeak = calculatePeak(canvas.height * volume, volumePeak);
 
-        // Draw visualizations
+        // 🔹 NEU: Mindestlautstärke-Check
+        const MIN_THRESHOLD = 10; // Lautstärke muss über diesem Wert liegen, um sichtbar zu sein
+        if (volume * 255 < MIN_THRESHOLD) { 
+          canvasCtx.clearRect(0, 0, canvas.width, canvas.height); // Canvas leeren
+          requestAnimationFrame(renderFrame);
+          return;
+        }
+
+        // Draw visualizations        
+        drawFrequencySpectrum(canvas, analyserRef.current);s
+
         drawWaveform(canvas, analyserRef.current, dataArrayRef.current);
-        drawFrequencySpectrum(canvas, analyserRef.current);
 
         // Draw volume bar
         canvasCtx.fillStyle = 'rgb(0, 0, 255)';
@@ -101,7 +109,8 @@ function AudioVisualizer() {
 
         // Request the next frame
         animationFrameRef.current = requestAnimationFrame(renderFrame);
-      }requestAnimationFrame(renderFrame);
+      }
+      requestAnimationFrame(renderFrame);
 
       // Start the animation
       animationActive = true;

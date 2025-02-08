@@ -1,29 +1,55 @@
+let globalAudioContext = null;
+let globalAnalyser = null;
+let globalStream = null;
 
 export async function setupAudio(deviceId) {
-  // Define constraints for the audio input
-  const constraints = { audio: { deviceId: { exact: deviceId } } };
+    if (globalAudioContext && globalStream) {
+        console.log("Reusing existing AudioContext and Stream");
+        return { analyser: globalAnalyser, dataArray: new Uint8Array(globalAnalyser.frequencyBinCount) };
+    }
 
-  try {
-    // Access the user's audio stream
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    const constraints = { 
+        audio: { 
+            deviceId: { exact: deviceId },
+            noiseSuppression: false, 
+            echoCancellation: false, 
+            autoGainControl: false 
+        } 
+    };
 
-    // Create the audio context and analyser
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioContext.createAnalyser();
+    try {
+        globalStream = await navigator.mediaDevices.getUserMedia(constraints);
 
-    // Connect the stream to the analyser
-    const source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
+        if (!globalAudioContext) {
+            globalAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
 
-    // Configure the analyser
-    analyser.fftSize = 2048;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
+        const analyser = globalAudioContext.createAnalyser();
+        const source = globalAudioContext.createMediaStreamSource(globalStream);
 
-    // Return the analyser and data array
-    return { analyser, dataArray };
-  } catch (error) {
-    console.error("Error setting up audio:", error);
-    throw error;
-  }
+        // **1. Lautstärke reduzieren**
+        const gainNode = globalAudioContext.createGain();
+        gainNode.gain.value = 0.6; // Reduziert die Amplitude um 40%
+
+        // **2. Hochpassfilter gegen Rauschen**
+        const highpassFilter = globalAudioContext.createBiquadFilter();
+        highpassFilter.type = "highpass";
+        highpassFilter.frequency.value = 80; // Filtert Frequenzen unter 80 Hz (Brummen/Rauschen)
+
+        // **3. Verbindungen setzen**
+        source.connect(highpassFilter);
+        highpassFilter.connect(gainNode);
+        gainNode.connect(analyser);
+
+        analyser.fftSize = 2048;
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+
+        globalAnalyser = analyser;
+
+        return { analyser, dataArray };
+    } catch (error) {
+        console.error("Error setting up audio:", error);
+        throw error;
+    }
 }
