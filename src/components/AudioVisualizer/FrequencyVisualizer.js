@@ -25,7 +25,7 @@ export default function FrequencyVisualizer(canvas, analyser, dataArray, { frequ
 
   for (let i = 0; i < dataArray.length; i += step) {
     const barHeight = dataArray[i] / 2;
-    canvasCtx.fillStyle = frequencyColor || 'rgb(255, 0, 0)';
+    canvasCtx.fillStyle = frequencyColor || 'rgb(0, 0, 0)';
 
     if (centered) {
       const centerY = canvas.height / 2;
