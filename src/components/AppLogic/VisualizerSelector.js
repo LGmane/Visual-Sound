@@ -10,8 +10,6 @@ import "../../styles/App.css";
 function VisualizerSelector({
   activeVisualizers,
   toggleVisualizer,
-  toggleBackgroundVideo,
-  showBackgroundVideo,
   toggleFrequencyCentered,
   isFrequencyCentered,
   barWidth,
@@ -60,7 +58,7 @@ function VisualizerSelector({
             >
               {label}
             </button>
-
+  
             {/* 🎨 Optionen für den Frequency Visualizer */}
             {id === 'frequency' && activeVisualizers.includes('frequency') && (
               <>
@@ -75,7 +73,7 @@ function VisualizerSelector({
                     />
                   ))}
                 </div>
-
+  
                 {/* 🎚️ Slider für Bar Width */}
                 <div className="bar-width-slider">
                   <label htmlFor="bar-width">Bar Width: {barWidth}</label>
@@ -89,7 +87,7 @@ function VisualizerSelector({
                     onChange={handleBarWidthChange}
                   />
                 </div>
-
+  
                 {/* 🎯 Button für zentrierte Darstellung */}
                 <button
                   onClick={toggleFrequencyCentered}
@@ -99,7 +97,7 @@ function VisualizerSelector({
                 </button>
               </>
             )}
-
+  
             {/* 🌊 Optionen für den Waveform Visualizer */}
             {id === 'waveform' && activeVisualizers.includes('waveform') && (
               <>
@@ -114,7 +112,7 @@ function VisualizerSelector({
                     />
                   ))}
                 </div>
-
+  
                 {/* 🎚️ Slider für Waveform Thickness */}
                 <div className="bar-width-slider">
                   <label htmlFor="waveform-thickness">Waveform Thickness: {waveformThickness}</label>
@@ -130,7 +128,7 @@ function VisualizerSelector({
                 </div>
               </>
             )}
-
+  
              {/* 📈 Optionen für den Volume Visualizer */}
              {id === 'volume' && activeVisualizers.includes('volume') && (
               <>
@@ -149,18 +147,17 @@ function VisualizerSelector({
             )}
           </div>
         ))}
-
-        {/* 🎬 Hintergrundvideo ein-/ausschalten */}
+  
+        {/* 🎲 RandomVisualizer Button */}
         <button
-          onClick={toggleBackgroundVideo}
-          className={showBackgroundVideo ? 'visualizer-button active' : 'visualizer-button'}
+          onClick={() => toggleVisualizer('random')}
+          className={activeVisualizers.includes('random') ? 'visualizer-button active' : 'visualizer-button'}
         >
-          Background Video
+          RandomVisualizer
         </button>
-
+  
       </div>
     </div>
   );
 }
-
 export default VisualizerSelector;

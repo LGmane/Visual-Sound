@@ -76,6 +76,14 @@ function MasterVisualizer({
           });
         }
 
+        // 🎲 RandomVisualizer (NEU)
+        if (activeVisualizers.includes('random') && Visualizers['random']) {
+          Visualizers['random'](canvas, analyser, dataArray, {
+            waveColor,
+            thickness: waveformThickness,
+          });
+        }
+
         requestAnimationFrame(renderFrame);
       };
 
