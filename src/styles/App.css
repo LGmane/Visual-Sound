@@ -26,3 +26,43 @@ h3 {
   justify-content: center;
   height: 100vh;
 }
+
+
+/* src/styles/App.css */
+.visualizer-container {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  margin: 10px auto;
+  background-color: black;
+}
+
+.visualizer-container.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fullscreen-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1100;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fullscreen-button:hover {
+  background-color: rgba(255, 255, 255, 1);
+}

@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AudioContext } from './components/AppLogic/AudioContextProvider';
 import DeviceSelector from './components/AppLogic/DeviceSelector';
 import VisualizerSelector from './components/AppLogic/VisualizerSelector';
@@ -13,25 +13,25 @@ function App() {
   const [activeVisualizers, setActiveVisualizers] = useState([]);
   const [showBackgroundVideo, setShowBackgroundVideo] = useState(false);
 
-  // Zustand für Farben
-  const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Standard: Grün
-  const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)'); // Standard: Rot
+  // Farben und Visualisierungseinstellungen
+  const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Grün
+  const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)'); // Rot
+  const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)'); // Blau
 
-  // Neuer Zustand für die mittige Darstellung des Frequency Visualizers
+  // Einstellungen für Visualizer
   const [isFrequencyCentered, setIsFrequencyCentered] = useState(false);
-
-  // Zustand für Balkenbreite (zwischen 1 und 10)
   const [barWidth, setBarWidth] = useState(2);
-
-  // Zustand für die Dicke der Wellenlinien
   const [waveformThickness, setWaveformThickness] = useState(2);
+
+  // Fullscreen-Modus verwalten
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Funktion zum Umschalten eines Visualisierers
   const toggleVisualizer = (visualizerType) => {
     setActiveVisualizers((prev) =>
       prev.includes(visualizerType)
-        ? prev.filter((type) => type !== visualizerType) // Deaktivieren
-        : [...prev, visualizerType] // Aktivieren
+        ? prev.filter((type) => type !== visualizerType)
+        : [...prev, visualizerType]
     );
   };
 
@@ -55,26 +55,46 @@ function App() {
     setWaveformThickness(value);
   };
 
+  // Funktion zur Änderung der Frequenzfarbe
   const handleFrequencyColorChange = (color) => {
-    console.log('Frequency color selected:', color); // Debugging
-    setFrequencyColor(color); // State aktualisieren
+    console.log('Frequency color selected:', color);
+    setFrequencyColor(color);
   };
 
-  const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)'); // Standard: Blau
+  // Funktion für den Fullscreen-Toggle
+  const handleFullscreenToggle = () => {
+    setIsFullscreen((prev) => !prev);
+  };
+
+  // 🆕 Fullscreen automatisch beenden bei ESC
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isFullscreen]);
 
   return (
     <div className="app">
       <h1>Visual Sound</h1>
+
       <MasterVisualizer
         activeVisualizers={activeVisualizers}
         waveColor={waveColor}
         frequencyColor={frequencyColor}
-        volumeColor={volumeColor} // Neue Prop
-        showBackgroundVideo={showBackgroundVideo} // Übergebe den Zustand
-        isFrequencyCentered={isFrequencyCentered} // Neuer Zustand
-        barWidth={barWidth} // Balkenbreite
-        waveformThickness={waveformThickness} // Wellenlinien-Dicke
+        volumeColor={volumeColor}
+        showBackgroundVideo={showBackgroundVideo}
+        isFrequencyCentered={isFrequencyCentered}
+        barWidth={barWidth}
+        waveformThickness={waveformThickness}
+        isFullscreen={isFullscreen}
+        onToggleFullscreen={handleFullscreenToggle}
       />
+
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
         toggleVisualizer={toggleVisualizer}
@@ -86,12 +106,12 @@ function App() {
         handleBarWidthChange={handleBarWidthChange}
         waveformThickness={waveformThickness}
         handleWaveformThicknessChange={handleWaveformThicknessChange}
-        waveformColor={waveColor} // Wellenfarbe übergeben
-        handleWaveformColorChange={setWaveColor} // Wellenfarbe ändern
-        frequencyColor={frequencyColor} // Frequenzfarbe übergeben
-        handleFrequencyColorChange={handleFrequencyColorChange} // Frequenzfarbe ändern
-        volumeColor={volumeColor} // Volume-Farbe hinzufügen
-        handleVolumeColorChange={setVolumeColor} // State-Setter für Volume-Farbe
+        waveformColor={waveColor}
+        handleWaveformColorChange={setWaveColor}
+        frequencyColor={frequencyColor}
+        handleFrequencyColorChange={handleFrequencyColorChange}
+        volumeColor={volumeColor}
+        handleVolumeColorChange={setVolumeColor}
       />
 
       <DeviceSelector onDeviceSelect={setSelectedDevice} />

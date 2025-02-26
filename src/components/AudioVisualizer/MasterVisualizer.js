@@ -8,15 +8,18 @@ function MasterVisualizer({
   activeVisualizers,
   waveColor,
   frequencyColor,
-  volumeColor, // Neu hinzugefügt
+  volumeColor,
   showBackgroundVideo,
   isFrequencyCentered,
   barWidth,
   waveformThickness,
+  isFullscreen,
+  onToggleFullscreen,
 }) {
   const { selectedDevice } = useContext(AudioContext);
   const canvasRef = useRef(null);
-  const videoRef = useRef(null); // Ref für das Video
+  const videoRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (!selectedDevice) return;
@@ -27,7 +30,7 @@ function MasterVisualizer({
       const canvas = canvasRef.current;
       const video = videoRef.current;
 
-      // Warte, bis das Video geladen ist
+      // Hintergrundvideo vorbereiten
       if (video && showBackgroundVideo) {
         await video.play().catch((error) => {
           console.error('Error attempting to play video:', error);
@@ -40,19 +43,17 @@ function MasterVisualizer({
         if (!animationActive) return;
 
         const canvasCtx = canvas.getContext('2d');
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 1. Zeichne das Hintergrundvideo, wenn es aktiviert ist
+        // Hintergrundvideo oder Fallback-Schwarz zeichnen
         if (video && showBackgroundVideo && video.readyState >= 2) {
           canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         } else {
-          // Fallback: Schwarz zeichnen
           canvasCtx.fillStyle = 'black';
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // 🔹 2. Zeichne die aktiven Visualizer in der richtigen Reihenfolge
-
-        // 2.1 Zuerst den Frequency-Visualizer (Hintergrund)
+        // Zeichne die aktiven Visualizer in der richtigen Reihenfolge
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
           Visualizers['frequency'](canvas, analyser, dataArray, {
             frequencyColor,
@@ -61,7 +62,6 @@ function MasterVisualizer({
           });
         }
 
-        // 2.2 Danach den Waveform-Visualizer (Vordergrund)
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
           Visualizers['waveform'](canvas, analyser, dataArray, {
             waveColor,
@@ -69,7 +69,6 @@ function MasterVisualizer({
           });
         }
 
-        // 2.3 Danach den Volume-Visualizer (falls aktiv)
         if (activeVisualizers.includes('volume') && Visualizers['volume']) {
           Visualizers['volume'](canvas, analyser, dataArray, {
             volumeColor,
@@ -92,30 +91,71 @@ function MasterVisualizer({
     activeVisualizers,
     waveColor,
     frequencyColor,
-    volumeColor, // Neu hinzugefügt
+    volumeColor,
     showBackgroundVideo,
     isFrequencyCentered,
     barWidth,
     waveformThickness,
   ]);
 
+  // 🆕 Fullscreen-Funktionalität
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (isFullscreen && container) {
+      container.requestFullscreen().catch((err) => {
+        console.error('Failed to enter fullscreen:', err);
+      });
+    } else if (!isFullscreen && document.fullscreenElement) {
+      document.exitFullscreen().catch((err) => {
+        console.error('Failed to exit fullscreen:', err);
+      });
+    }
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape' && document.fullscreenElement) {
+        onToggleFullscreen();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isFullscreen, onToggleFullscreen]);
+
   return (
-    <div className="visualizer-container">
+    <div
+      ref={containerRef}
+      className={`visualizer-container ${isFullscreen ? 'fullscreen' : ''}`}
+    >
       <video
         ref={videoRef}
         autoPlay
         muted
         loop
         style={{ display: 'none' }}
-        src={require('../../assets/videos/Background.mp4')} // Importiere das Video
+        src={require('../../assets/videos/Background.mp4')}
       />
       <canvas
         ref={canvasRef}
-        width="800"
-        height="400"
-        align="center"
-        style={{ marginTop: '10px' }}
+        width={isFullscreen ? window.innerWidth : 800}
+        height={isFullscreen ? window.innerHeight : 400}
+        style={{
+          width: '100%',
+          height: '100%',
+          border: isFullscreen ? 'none' : '1px solid white',
+          backgroundColor: 'black',
+        }}
       ></canvas>
+
+      <button
+        className="fullscreen-button"
+        onClick={onToggleFullscreen}
+      >
+        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+      </button>
     </div>
   );
 }
