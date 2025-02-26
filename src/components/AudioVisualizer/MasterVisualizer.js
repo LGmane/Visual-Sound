@@ -98,66 +98,74 @@ function MasterVisualizer({
     waveformThickness,
   ]);
 
-  // 🆕 Fullscreen-Funktionalität
-  useEffect(() => {
-    const container = containerRef.current;
+// 🆕 Fullscreen-Funktionalität
+useEffect(() => {
+  const container = containerRef.current;
 
-    if (isFullscreen && container) {
-      container.requestFullscreen().catch((err) => {
-        console.error('Failed to enter fullscreen:', err);
-      });
-    } else if (!isFullscreen && document.fullscreenElement) {
-      document.exitFullscreen().catch((err) => {
-        console.error('Failed to exit fullscreen:', err);
-      });
+  // Fullscreen-Modus aktivieren
+  if (isFullscreen && container) {
+    container.requestFullscreen().catch((err) => {
+      console.error('Failed to enter fullscreen:', err);
+    });
+  } 
+  // Fullscreen-Modus verlassen
+  else if (!isFullscreen && document.fullscreenElement) {
+    document.exitFullscreen().catch((err) => {
+      console.error('Failed to exit fullscreen:', err);
+    });
+  }
+
+  // Event-Listener für Fullscreen-Änderungen
+  const handleFullscreenChange = () => {
+    if (!document.fullscreenElement && isFullscreen) {
+      onToggleFullscreen(); // Verwende die korrekte Funktion
     }
+  };
 
-    const handleEscape = (event) => {
-      if (event.key === 'Escape' && document.fullscreenElement) {
-        onToggleFullscreen();
-      }
-    };
+  window.addEventListener('fullscreenchange', handleFullscreenChange);
 
-    window.addEventListener('keydown', handleEscape);
+  return () => {
+    window.removeEventListener('fullscreenchange', handleFullscreenChange);
+  };
+}, [isFullscreen, onToggleFullscreen]);
 
-    return () => {
-      window.removeEventListener('keydown', handleEscape);
-    };
-  }, [isFullscreen, onToggleFullscreen]);
+// src/components/AudioVisualizer/MasterVisualizer.js
+return (
+  <div
+    ref={containerRef}
+    className={`visualizer-container ${isFullscreen ? 'fullscreen' : ''}`}
+  >
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+      loop
+      style={{ display: 'none' }}
+      src={require('../../assets/videos/Background.mp4')}
+    />
+    <canvas
+      ref={canvasRef}
+      width={isFullscreen ? window.innerWidth : 800}
+      height={isFullscreen ? window.innerHeight : 400}
+      style={{
+        width: '100%',
+        height: '100%',
+        border: isFullscreen ? 'none' : '1px solid white',
+        backgroundColor: 'black',
+      }}
+    ></canvas>
 
-  return (
-    <div
-      ref={containerRef}
-      className={`visualizer-container ${isFullscreen ? 'fullscreen' : ''}`}
-    >
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        style={{ display: 'none' }}
-        src={require('../../assets/videos/Background.mp4')}
-      />
-      <canvas
-        ref={canvasRef}
-        width={isFullscreen ? window.innerWidth : 800}
-        height={isFullscreen ? window.innerHeight : 400}
-        style={{
-          width: '100%',
-          height: '100%',
-          border: isFullscreen ? 'none' : '1px solid white',
-          backgroundColor: 'black',
-        }}
-      ></canvas>
-
+    {/* Button nur anzeigen, wenn nicht im Fullscreen-Modus */}
+    {!isFullscreen && (
       <button
         className="fullscreen-button"
         onClick={onToggleFullscreen}
       >
-        {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        Fullscreen
       </button>
-    </div>
-  );
+    )}
+  </div>
+);
 }
 
 export default MasterVisualizer;
