@@ -1,12 +1,13 @@
 // src/components/AudioVisualizer/RandomVisualizer.js
 
+import { calculateVolume } from '../../utils/audioCalculations';
+
 /**
- * 🎲 RandomVisualizer: Zeichnet eine zufällige, kreisförmige Wellenform basierend auf Audiodaten.
- * Erlaubt die Anpassung des Ausschlags über einen Multiplikator.
+ * 🎲 RandomVisualizer: Zeichnet eine dynamische, weiche Kreiswellenform basierend auf Audiodaten.
+ * Nutzt Bezier-Kurven für weiche Übergänge und mehr Punkte für ein runderes Erscheinungsbild.
  */
 
-export default function RandomVisualizer(canvas, analyser, dataArray, { waveColor = 'rgb(0, 255, 255)', thickness = 2, amplitudeMultiplier = 200 }) {
-    // Überprüfungen auf korrekte Eingaben
+export default function RandomVisualizer(canvas, analyser, dataArray, { waveColor = 'rgb(0, 255, 255)', thickness = 2, amplitudeMultiplier = 10000, amplitudeBoost = 5 }) {
     if (!(canvas instanceof HTMLCanvasElement)) {
         console.error('RandomVisualizer: Invalid canvas element');
         return;
@@ -20,44 +21,59 @@ export default function RandomVisualizer(canvas, analyser, dataArray, { waveColo
         return;
     }
 
-    // Initialisiere Canvas-Kontext und hole Audiodaten
     const canvasCtx = canvas.getContext('2d');
     analyser.getByteTimeDomainData(dataArray);
 
-    // Setze Stiloptionen
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
     canvasCtx.lineWidth = thickness;
-    canvasCtx.strokeStyle = waveColor || 'rgb(0, 255, 255)'; // Standardfarbe: Türkis
+    canvasCtx.strokeStyle = waveColor || 'rgb(0, 255, 255)';
+    canvasCtx.lineJoin = 'round';
+    canvasCtx.lineCap = 'round';
     canvasCtx.beginPath();
 
-    // Definiere Kreisparameter
     const { width, height } = canvas;
     const centerX = width / 2;
     const centerY = height / 2;
-    const baseRadius = Math.min(width, height) / 4; // Basisradius bleibt stabil
 
-    // Berechne den Winkel pro Datenpunkt
+    const baseRadius = Math.min(width, height) / 4;
     const bufferLength = dataArray.length;
-    const step = (Math.PI * 2) / bufferLength;
+    
+    // 🌀 Erhöhe die Anzahl der Punkte für weichere Übergänge
+    const step = (Math.PI * 2) / (bufferLength * 2);
 
-    for (let i = 0; i <= bufferLength; i++) { // Beachte das <=, um den Kreis zu schließen
+    const time = performance.now() / 1000;
+    const randomStart = (time * 0.5) % (Math.PI * 2);
+
+    // 💡 Speichere vorherige Koordinaten für Bezier-Kurven
+    let prevX = centerX + baseRadius;
+    let prevY = centerY;
+
+    for (let i = 0; i <= bufferLength * 2; i++) {
         const amplitude = dataArray[i % bufferLength] / 255.0;
-        const angle = i * step;
+        const angle = randomStart + i * step;
 
-        // Berechne den Radius mit verstärktem Ausschlag
-        const distRadius = baseRadius + (amplitude - 0.5) * amplitudeMultiplier;
+        const scaledAmplitude = Math.pow(amplitude, amplitudeBoost) * amplitudeMultiplier;
 
-        // Berechne die Positionen entlang des Kreises
-        const x = centerX + Math.cos(angle) * distRadius;
-        const y = centerY + Math.sin(angle) * distRadius;
+        const distRadius = baseRadius + (amplitude - 0.5) * scaledAmplitude;
+        const clampedRadius = Math.max(0, Math.min(distRadius, Math.min(width, height) / 2));
+
+        const x = centerX + Math.cos(angle) * clampedRadius;
+        const y = centerY + Math.sin(angle) * clampedRadius;
 
         if (i === 0) {
             canvasCtx.moveTo(x, y);
         } else {
-            canvasCtx.lineTo(x, y);
+            // 🎨 Nutze Bezier-Kurven für weiche Übergänge
+            const cpX = (prevX + x) / 2;
+            const cpY = (prevY + y) / 2;
+            canvasCtx.quadraticCurveTo(prevX, prevY, cpX, cpY);
         }
+
+        prevX = x;
+        prevY = y;
     }
 
-    // Schließe den Kreis
     canvasCtx.closePath();
     canvasCtx.stroke();
 }
