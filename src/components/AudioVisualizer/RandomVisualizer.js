@@ -3,11 +3,17 @@
 import { calculateVolume } from '../../utils/audioCalculations';
 
 /**
- * 🎲 RandomVisualizer: Zeichnet eine dynamische, weiche Kreiswellenform basierend auf Audiodaten.
- * Nutzt Bezier-Kurven für weiche Übergänge und mehr Punkte für ein runderes Erscheinungsbild.
+ * 🎲 RandomVisualizer: Zeichnet eine dynamische, leuchtende Kreiswellenform basierend auf Audiodaten.
+ * Nutzt Bezier-Kurven für weiche Übergänge und fügt einen intensiven Glow-Effekt hinzu.
  */
 
-export default function RandomVisualizer(canvas, analyser, dataArray, { waveColor = 'rgb(0, 255, 255)', thickness = 2, amplitudeMultiplier = 10000, amplitudeBoost = 5 }) {
+export default function RandomVisualizer(canvas, analyser, dataArray, { 
+    waveColor = 'rgba(0, 255, 255, 0.7)', 
+    thickness = 2, 
+    amplitudeMultiplier = 5000, 
+    amplitudeBoost = 5, 
+    scale = 1 
+}) {
     if (!(canvas instanceof HTMLCanvasElement)) {
         console.error('RandomVisualizer: Invalid canvas element');
         return;
@@ -24,28 +30,29 @@ export default function RandomVisualizer(canvas, analyser, dataArray, { waveColo
     const canvasCtx = canvas.getContext('2d');
     analyser.getByteTimeDomainData(dataArray);
 
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-    canvasCtx.lineWidth = thickness;
-    canvasCtx.strokeStyle = waveColor || 'rgb(0, 255, 255)';
+    // 🎨 Setze Stiloptionen
+    canvasCtx.lineWidth = thickness * scale;
+    canvasCtx.strokeStyle = waveColor;
     canvasCtx.lineJoin = 'round';
     canvasCtx.lineCap = 'round';
     canvasCtx.beginPath();
+
+    // ✨ Intensiver, unabhängiger Glow-Effekt
+    canvasCtx.shadowBlur = 30; // Fester Glow, unabhängig von thickness
+    canvasCtx.shadowColor = 'white'; // Glow-Farbe
 
     const { width, height } = canvas;
     const centerX = width / 2;
     const centerY = height / 2;
 
-    const baseRadius = Math.min(width, height) / 4;
+    const baseRadius = (Math.min(width, height) / 4) * scale;
     const bufferLength = dataArray.length;
     
-    // 🌀 Erhöhe die Anzahl der Punkte für weichere Übergänge
     const step = (Math.PI * 2) / (bufferLength * 2);
 
     const time = performance.now() / 1000;
     const randomStart = (time * 0.5) % (Math.PI * 2);
 
-    // 💡 Speichere vorherige Koordinaten für Bezier-Kurven
     let prevX = centerX + baseRadius;
     let prevY = centerY;
 
@@ -53,8 +60,7 @@ export default function RandomVisualizer(canvas, analyser, dataArray, { waveColo
         const amplitude = dataArray[i % bufferLength] / 255.0;
         const angle = randomStart + i * step;
 
-        const scaledAmplitude = Math.pow(amplitude, amplitudeBoost) * amplitudeMultiplier;
-
+        const scaledAmplitude = Math.pow(amplitude, amplitudeBoost) * amplitudeMultiplier * scale;
         const distRadius = baseRadius + (amplitude - 0.5) * scaledAmplitude;
         const clampedRadius = Math.max(0, Math.min(distRadius, Math.min(width, height) / 2));
 
@@ -64,7 +70,6 @@ export default function RandomVisualizer(canvas, analyser, dataArray, { waveColo
         if (i === 0) {
             canvasCtx.moveTo(x, y);
         } else {
-            // 🎨 Nutze Bezier-Kurven für weiche Übergänge
             const cpX = (prevX + x) / 2;
             const cpY = (prevY + y) / 2;
             canvasCtx.quadraticCurveTo(prevX, prevY, cpX, cpY);

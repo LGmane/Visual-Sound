@@ -31,7 +31,6 @@ function MasterVisualizer({
       const canvas = canvasRef.current;
       const video = videoRef.current;
 
-      // 🎬 Hintergrundvideo vorbereiten
       if (video && showBackgroundVideo) {
         await video.play().catch((error) => {
           console.error('Error attempting to play video:', error);
@@ -46,7 +45,6 @@ function MasterVisualizer({
         const canvasCtx = canvas.getContext('2d');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 🖼 Hintergrundvideo oder schwarzes Fallback anzeigen
         if (video && showBackgroundVideo && video.readyState >= 2) {
           canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
         } else {
@@ -54,19 +52,22 @@ function MasterVisualizer({
           canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // 🎨 Zeichne die aktiven Visualizer in der richtigen Reihenfolge
+        const baseWidth = 800;
+        const baseHeight = 400;
+        const scaleFactor = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
+
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
           Visualizers['frequency'](canvas, analyser, dataArray, {
             frequencyColor,
             centered: isFrequencyCentered,
-            barWidth,
+            barWidth: barWidth * scaleFactor,
           });
         }
 
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
           Visualizers['waveform'](canvas, analyser, dataArray, {
             waveColor,
-            thickness: waveformThickness,
+            thickness: waveformThickness * scaleFactor,
           });
         }
 
@@ -76,11 +77,13 @@ function MasterVisualizer({
           });
         }
 
-        // 🎲 RandomVisualizer (NEU)
         if (activeVisualizers.includes('random') && Visualizers['random']) {
           Visualizers['random'](canvas, analyser, dataArray, {
             waveColor,
-            thickness: waveformThickness,
+            thickness: waveformThickness * scaleFactor,
+            amplitudeMultiplier: 5000 * scaleFactor,
+            amplitudeBoost: 5,
+            scaleFactor
           });
         }
 
@@ -107,24 +110,19 @@ function MasterVisualizer({
     waveformThickness,
   ]);
 
-  // 🖥 Fullscreen-Funktionalität
   useEffect(() => {
     const container = containerRef.current;
 
-    // Fullscreen-Modus aktivieren
     if (isFullscreen && container) {
       container.requestFullscreen().catch((err) => {
         console.error('Failed to enter fullscreen:', err);
       });
-    } 
-    // Fullscreen-Modus verlassen
-    else if (!isFullscreen && document.fullscreenElement) {
+    } else if (!isFullscreen && document.fullscreenElement) {
       document.exitFullscreen().catch((err) => {
         console.error('Failed to exit fullscreen:', err);
       });
     }
 
-    // 📲 Event-Listener für Fullscreen-Änderungen
     const handleFullscreenChange = () => {
       if (!document.fullscreenElement && isFullscreen) {
         onToggleFullscreen();
@@ -163,7 +161,6 @@ function MasterVisualizer({
         }}
       ></canvas>
 
-      {/* 🔲 Button nur anzeigen, wenn nicht im Fullscreen-Modus */}
       {!isFullscreen && (
         <button
           className="fullscreen-button"
