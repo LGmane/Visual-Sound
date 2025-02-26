@@ -17,7 +17,7 @@ function App() {
   const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Grün für Wellenform
   const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)'); // Rot für Frequenz
   const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)'); // Blau für Lautstärke
-
+  
   // 🛠 Visualizer-Einstellungen
   const [isFrequencyCentered, setIsFrequencyCentered] = useState(false); // Zentrierung des Frequenz-Visualizers
   const [barWidth, setBarWidth] = useState(2); // Breite der Frequenzbalken
