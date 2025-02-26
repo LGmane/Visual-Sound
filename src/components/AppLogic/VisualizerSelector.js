@@ -1,6 +1,12 @@
-import React from 'react';
-import '../../styles/VisualizerSelector.css';
+// src/components/AppLogic/VisualizerSelector.js - Ermöglicht die Auswahl und Konfiguration der verschiedenen Visualizer und deren Einstellungen
 
+import React from 'react';
+import "../../styles/App.css";
+
+/**
+ * 🎛️ VisualizerSelector Komponente
+ * Stellt Schaltflächen und Steuerungen zur Verfügung, um die Visualizer und deren Optionen zu konfigurieren.
+ */
 function VisualizerSelector({
   activeVisualizers,
   toggleVisualizer,
@@ -19,13 +25,15 @@ function VisualizerSelector({
   volumeColor,
   handleVolumeColorChange,
 }) {
+  
+  // 🎨 Verfügbare Visualizer und deren Bezeichnungen
   const visualizers = [
     { id: 'waveform', label: 'Waveform Visualizer' },
     { id: 'frequency', label: 'Frequency Visualizer' },
-    { id: 'volume', label: 'Volume Visualizer' }, // Neuer Visualizer
+    { id: 'volume', label: 'Volume Visualizer' },
   ];
 
-  // Vordefinierte Farben
+  // 🎨 Vordefinierte Farbpalette
   const colorPalette = [
     'rgb(0, 0, 0)',      // Schwarz
     'rgb(255, 0, 0)',    // Rot
@@ -41,9 +49,11 @@ function VisualizerSelector({
     <div className="visualizer-selector">
       <h3>Select Visualizers:</h3>
       <div className="visualizer-buttons">
+        
         {visualizers.map(({ id, label }) => (
           <div key={id} className="visualizer-button-group">
-            {/* Haupt-Button */}
+            
+            {/* 🎛️ Umschalt-Button für jeden Visualizer */}
             <button
               onClick={() => toggleVisualizer(id)}
               className={activeVisualizers.includes(id) ? 'visualizer-button active' : 'visualizer-button'}
@@ -51,10 +61,10 @@ function VisualizerSelector({
               {label}
             </button>
 
-            {/* Frequency Visualizer: Zusätzliche Optionen */}
+            {/* 🎨 Optionen für den Frequency Visualizer */}
             {id === 'frequency' && activeVisualizers.includes('frequency') && (
               <>
-                {/* 1. Color-Picker */}
+                {/* 🎨 Farbwahl */}
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
                   {colorPalette.map((color) => (
                     <div
@@ -66,7 +76,7 @@ function VisualizerSelector({
                   ))}
                 </div>
 
-                {/* 2. Slider für Bar Width */}
+                {/* 🎚️ Slider für Bar Width */}
                 <div className="bar-width-slider">
                   <label htmlFor="bar-width">Bar Width: {barWidth}</label>
                   <input
@@ -80,7 +90,7 @@ function VisualizerSelector({
                   />
                 </div>
 
-                {/* 3. Centered/Bottom-Button */}
+                {/* 🎯 Button für zentrierte Darstellung */}
                 <button
                   onClick={toggleFrequencyCentered}
                   className="visualizer-button"
@@ -90,10 +100,10 @@ function VisualizerSelector({
               </>
             )}
 
-            {/* Waveform Visualizer: Zusätzliche Optionen */}
+            {/* 🌊 Optionen für den Waveform Visualizer */}
             {id === 'waveform' && activeVisualizers.includes('waveform') && (
               <>
-                {/* 1. Color-Picker */}
+                {/* 🎨 Farbwahl */}
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
                   {colorPalette.map((color) => (
                     <div
@@ -105,7 +115,7 @@ function VisualizerSelector({
                   ))}
                 </div>
 
-                {/* 2. Slider für Waveform Thickness */}
+                {/* 🎚️ Slider für Waveform Thickness */}
                 <div className="bar-width-slider">
                   <label htmlFor="waveform-thickness">Waveform Thickness: {waveformThickness}</label>
                   <input
@@ -121,10 +131,10 @@ function VisualizerSelector({
               </>
             )}
 
-             {/* Volume Visualizer: Zusätzliche Optionen */}
+             {/* 📈 Optionen für den Volume Visualizer */}
              {id === 'volume' && activeVisualizers.includes('volume') && (
               <>
-                {/* Color-Picker */}
+                {/* 🎨 Farbwahl */}
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
                   {colorPalette.map((color) => (
                     <div
@@ -139,13 +149,15 @@ function VisualizerSelector({
             )}
           </div>
         ))}
-        {/* Background Video Button */}
+
+        {/* 🎬 Hintergrundvideo ein-/ausschalten */}
         <button
           onClick={toggleBackgroundVideo}
           className={showBackgroundVideo ? 'visualizer-button active' : 'visualizer-button'}
         >
           Background Video
         </button>
+
       </div>
     </div>
   );

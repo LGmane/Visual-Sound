@@ -1,36 +1,37 @@
-// src/components/AudioVisualizer/AudioVisualizer.js
+// src/components/AudioVisualizer/AudioVisualizer.js - Verwaltet die Audiogeräte, initialisiert den Audiostream und rendert Visualisierungen im Canvas
+
 import React, { useEffect, useState, useRef } from 'react';
-import { setupAudio } from '../utils/audioUtils'; // Utility for setting up audio
+import { setupAudio } from '../utils/audioUtils'; // Hilfsfunktion zur Audiokonfiguration
 import {
   calculateVolume,
   calculatePeak,
-} from '../utils/audioCalculations'; // Calculations for audio data
+} from '../utils/audioCalculations'; // Berechnungen für Audioanalysen
 import {
   drawFrequencySpectrum,
-  drawWaveform
-} from '../utils/visualizerUtils'; // Visualizations
+  drawWaveform,
+} from '../utils/visualizerUtils'; // Funktionen zur Visualisierung
 
 /**
- * AudioVisualizer Component
- * Manages the state, audio initialization, and rendering of visualizations.
+ * 🎵 AudioVisualizer Komponente
+ * Verwaltet den Zustand, initialisiert Audio und steuert die Visualisierungsfunktionen.
  */
 function AudioVisualizer() {
-  // State for managing audio devices and the selected device
+  // 🎧 State für verfügbare Audiogeräte und ausgewähltes Gerät
   const [devices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState('');
 
-  // State to control animation
+  // 🎬 Steuert die Animation der Visualisierungen
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Refs for audio analyser, data arrays, and canvas
+  // 🧠 Refs für Audio-Analyser, Datenarrays und Canvas
   const analyserRef = useRef(null);
   const dataArrayRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Ref for animation frame ID
+  // 🔁 Ref für die Animation-Frame-ID
   const animationFrameRef = useRef(null);
 
-  // Load available audio devices on component mount
+  // 📲 Lädt verfügbare Audiogeräte beim Komponentenmout
   useEffect(() => {
     async function getAudioDevices() {
       const deviceList = await navigator.mediaDevices.enumerateDevices();
@@ -38,15 +39,16 @@ function AudioVisualizer() {
       setDevices(audioInputs);
 
       if (audioInputs.length > 0) {
-        setSelectedDevice(audioInputs[0].deviceId); // Default to the first device
+        setSelectedDevice(audioInputs[0].deviceId); // Wählt standardmäßig das erste Gerät aus
       }
     }
     getAudioDevices();
   }, []);
 
-  // Initialize audio when a device is selected
+  // 🎶 Initialisiert Audio, wenn ein Gerät ausgewählt wird
   useEffect(() => {
     if (!selectedDevice) return;
+
     async function initializeAudio() {
       const { analyser, dataArray } = await setupAudio(selectedDevice);
       analyserRef.current = analyser;
@@ -55,9 +57,9 @@ function AudioVisualizer() {
     initializeAudio();
   }, [selectedDevice]);
 
-  // Manage visualizations based on isAnimating state
+  // 🎨 Verwaltet die Visualisierungen basierend auf dem `isAnimating` Zustand
   useEffect(() => {
-    let animationActive = false; // Kontrolliert den Status der Animation
+    let animationActive = false; 
 
     if (isAnimating) {
       console.log('Animation started');
@@ -67,7 +69,8 @@ function AudioVisualizer() {
 
       let lastRenderTime = 0;
       const targetFPS = 60; // Maximal 60 FPS
-      // Render function
+
+      // 🎬 Render-Funktion für die Animation
       function renderFrame(currentTime) {
         const timeSinceLastRender = currentTime - lastRenderTime;
         if (timeSinceLastRender < 1000 / targetFPS) {
@@ -76,57 +79,53 @@ function AudioVisualizer() {
         }
         lastRenderTime = currentTime;
 
-        if (!animationActive) return; // Beende die Schleife, wenn die Animation gestoppt wurde
+        if (!animationActive) return; 
 
-        // Clear canvas
+        // 🧹 Canvas bereinigen
         canvasCtx.fillStyle = 'rgb(0, 0, 0)';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Calculate volume
+        // 📈 Berechnung der Lautstärke und des Peaks
         const volume = calculateVolume(dataArrayRef.current);
         volumePeak = calculatePeak(canvas.height * volume, volumePeak);
 
-        // 🔹 NEU: Mindestlautstärke-Check
-        const MIN_THRESHOLD = 10; // Lautstärke muss über diesem Wert liegen, um sichtbar zu sein
+        // 🔈 Mindestlautstärkeschwelle
+        const MIN_THRESHOLD = 10; 
         if (volume * 255 < MIN_THRESHOLD) { 
-          canvasCtx.clearRect(0, 0, canvas.width, canvas.height); // Canvas leeren
+          canvasCtx.clearRect(0, 0, canvas.width, canvas.height); 
           requestAnimationFrame(renderFrame);
           return;
         }
 
-        // Draw visualizations        
-        drawFrequencySpectrum(canvas, analyserRef.current);s
-
+        // 🎨 Zeichnet die Visualisierungen
+        drawFrequencySpectrum(canvas, analyserRef.current);
         drawWaveform(canvas, analyserRef.current, dataArrayRef.current);
 
-        // Draw volume bar
+        // 🎚 Zeichnet die Lautstärkenanzeige
         canvasCtx.fillStyle = 'rgb(0, 0, 255)';
         canvasCtx.fillRect(canvas.width - 50, canvas.height - canvas.height * volume, 30, canvas.height * volume);
 
-        // Draw volume peak
-        canvasCtx.fillStyle = 'rgb(0, 0, 255)';
+        // 🎯 Zeichnet den Lautstärkenpeak
         canvasCtx.fillRect(canvas.width - 50, canvas.height - volumePeak - 5, 30, 5);
 
-        // Request the next frame
         animationFrameRef.current = requestAnimationFrame(renderFrame);
       }
+      
       requestAnimationFrame(renderFrame);
-
-      // Start the animation
       animationActive = true;
-      animationFrameRef.current = requestAnimationFrame(renderFrame);
+
     } else {
       console.log('Animation stopped');
-      animationActive = false; // Beende die Animation
+      animationActive = false;
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
     } 
 
-    // Cleanup beim Verlassen der Komponente
+    // 🧼 Bereinigt Animationen beim Verlassen der Komponente
     return () => {
-      animationActive = false; // Animation deaktivieren
+      animationActive = false;
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
@@ -134,14 +133,12 @@ function AudioVisualizer() {
     };
   }, [isAnimating]);
 
-
-
-  // Function to start visualizations
+  // ▶️ Startet die Visualisierung
   function startVisualizations() {
     setIsAnimating(true);
   }
 
-  // Function to stop visualizations
+  // ⏹ Stoppt die Visualisierung
   function stopVisualizations() {
     setIsAnimating(false);
   }
@@ -149,6 +146,8 @@ function AudioVisualizer() {
   return (
     <div>
       <h1>Audio Visualizer</h1>
+      
+      {/* 🎙 Auswahl des Audioeingangs */}
       <label htmlFor="audio-input">Select Audio Input:</label>
       <select
         id="audio-input"
@@ -169,7 +168,17 @@ function AudioVisualizer() {
         <button onClick={stopVisualizations}>Stop</button>
       </div>
 
-      
+      {/* 📺 Canvas zur Darstellung der Visualisierungen */}
+      <canvas
+        ref={canvasRef}
+        width="800"
+        height="400"
+        style={{
+          border: '1px solid white',
+          marginTop: '10px',
+          backgroundColor: 'black',
+        }}
+      ></canvas>
     </div>
   );
 }

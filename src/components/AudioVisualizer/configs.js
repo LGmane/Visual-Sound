@@ -1,10 +1,15 @@
-// src/components/AudioVisualizer/configs.js
-import FrequencyVisualizer from './FrequencyVisualizer';
-import WaveformVisualizer from './WaveformVisualizer';
-import VolumeVisualizer from './VolumeVisualizer';
+// src/components/AudioVisualizer/configs.js - Konfigurationsdatei zur Verwaltung der verfügbaren Visualizer-Komponenten
 
+import FrequencyVisualizer from './FrequencyVisualizer'; // 🎨 Visualisiert das Frequenzspektrum als Balkendiagramm
+import WaveformVisualizer from './WaveformVisualizer'; // 🌊 Zeichnet die Audiosignale als Wellenform
+import VolumeVisualizer from './VolumeVisualizer'; // 📈 Stellt die Lautstärke durch eine Volumenanzeige dar
+
+/**
+ * 🧮 Visualizer Konfiguration
+ * Verknüpft die Visualizer-Typen mit den entsprechenden Komponenten.
+ */
 export const Visualizers = {
-  frequency: FrequencyVisualizer,
-  waveform: WaveformVisualizer,
-  volume: VolumeVisualizer, // Neuer Visualizer
+  frequency: FrequencyVisualizer, // Frequenzspektrum-Visualizer
+  waveform: WaveformVisualizer, // Wellenform-Visualizer
+  volume: VolumeVisualizer, // Lautstärke-Visualizer
 };

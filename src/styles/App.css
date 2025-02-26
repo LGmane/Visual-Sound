@@ -1,23 +1,33 @@
+/* ----------------------- */
+/* 🌐 GLOBALE STILE */
+/* ----------------------- */
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+}
+
+h1, h3 {
+  margin: 20px 0;
+  text-align: center;
+  color: white;
 }
 
 h1 {
   font-size: 2rem;
-  margin: 20px 0;
-  text-align: center;
-  color: rgb(255, 255, 255);
 }
 
 h3 {
-  margin: 20px 0;
-  text-align: center;
-  color: rgb(255, 255, 255);
+  font-size: 1.5rem;
 }
+
+/* ----------------------- */
+/* 📐 LAYOUT UND CONTAINER */
+/* ----------------------- */
 
 .app {
   display: flex;
@@ -27,42 +37,243 @@ h3 {
   height: 100vh;
 }
 
-
-/* src/styles/App.css */
+/* Visualizer Container */
 .visualizer-container {
   position: relative;
   width: 800px;
   height: 400px;
   margin: 10px auto;
   background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Fullscreen-Modus */
 .visualizer-container.fullscreen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: black;
   z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Canvas-Styling */
+canvas {
+  border: 1px solid white;
+  margin-top: 10px;
+}
+
+/* ----------------------- */
+/* 🎛️ DEVICE SELECTOR STYLES */
+/* ----------------------- */
+
+.device-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.device-selector label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.device-selector select {
+  appearance: none;
+  background-color: var(--button-bg);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: 2px solid var(--button-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  min-width: 150px;
+  min-height: 50px;
+  text-align: center;
+}
+
+.device-selector select:hover,
+.device-selector select:focus {
+  background-color: var(--highlight-color);
+  color: black;
+  border-color: var(--highlight-color);
+}
+
+/* ----------------------- */
+/* 🕹️ BUTTON STYLES */
+/* ----------------------- */
+
+.visualizer-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  border: 2px solid var(--button-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  transition: var(--transition-standard);
+  min-width: 250px;
+  min-height: 50px;
+}
+
+.visualizer-button.active {
+  background-color: yellow;
+  color: black;
+  border-color: yellow;
+}
+
+/* 🎬 Fullscreen Button Style */
+.fullscreen-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1100;
+  color: var(--color-white);
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--color-white);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-standard), transform 0.2s;
+}
+
+.fullscreen-button:hover {
+  background-color: var(--color-white);
+  color: var(--color-black);
+  transform: scale(1.05);
+}
+
+/* ----------------------- */
+/* 🎨 VISUALIZER SELECTOR STYLES */
+/* ----------------------- */
+
+.visualizer-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.visualizer-button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.visualizer-button-group .visualizer-button + .visualizer-button {
+  margin-top: 5px;
+}
+
+/* ----------------------- */
+/* 🎚️ SLIDER STYLING */
+/* ----------------------- */
+
+.bar-width-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.bar-width-slider label {
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.simple-slider {
+  width: 150px;
+  height: 6px;
+  appearance: none;
+  background: #4a4a4a;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.simple-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #4a4a4a;
+}
+
+.simple-slider::-webkit-slider-thumb:hover {
+  background: #f1f1f1;
+}
+
+.simple-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5);
+}
+
+/* ----------------------- */
+/* 🎨 COLOR PICKER STYLES */
+/* ----------------------- */
+
+.color-picker-button {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 250px;
+  height: 50px;
+  background-color: #4a4a4a;
+  border: 2px solid yellow;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition-standard);
+}
+
+.color-segment {
+  flex: 1;
+  height: 100%;
+  transition: flex 0.3s, transform 0.2s;
+}
+
+.color-segment.selected {
+  flex: 3;
+}
+
+.color-segment:hover {
+  transform: scale(1.1);
+}
+
+/* ----------------------- */
+/* 🚦 UTILITY STYLES */
+/* ----------------------- */
+
+:root {
+  --button-bg: rgb(123, 123, 123);
+  --highlight-color: #decb04;
+  --transition-standard: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.fullscreen-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 1100;
-  background-color: rgba(255, 255, 255, 0.8);
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.fullscreen-button:hover {
-  background-color: rgba(255, 255, 255, 1);
-}
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.p-10 { padding: 10px; }
