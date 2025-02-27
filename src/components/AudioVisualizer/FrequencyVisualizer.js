@@ -31,15 +31,24 @@ export default function FrequencyVisualizer(
 
   const { width, height } = canvas;
 
-  // 🧮 Berechnung der Anzahl der Balken basierend auf der Canvas-Breite und der Balkenbreite
+  // 🧮 Berechnung der Frequenzgrenzen
+  const nyquist = analyser.context.sampleRate / 2; // Maximal darstellbare Frequenz (z. B. 22.050 Hz)
+  const maxFrequency = 20000; // Obergrenze für den Visualizer
+
+  // Berechnung des maximalen Index für 20.000 Hz
+  const maxIndex = Math.floor((maxFrequency / nyquist) * dataArray.length);
+
+  // Berechnung der Anzahl der Balken basierend auf der Canvas-Breite und der Balkenbreite
   const scaledBarWidth = barWidth * scale;
-  const numberOfBars = Math.floor(width / (scaledBarWidth + 1));
-  const step = Math.ceil(dataArray.length / numberOfBars);
+  const numberOfBars = Math.min(Math.floor(width / (scaledBarWidth + 1)), maxIndex);
+  const step = Math.ceil(maxIndex / numberOfBars);
 
   let x = 0; // Startposition der Balken
 
+  canvasCtx.clearRect(0, 0, width, height);
+
   // 🎨 Zeichnet die Frequenzbalken auf das Canvas
-  for (let i = 0; i < dataArray.length; i += step) {
+  for (let i = 0; i < maxIndex; i += step) {
     const amplitude = dataArray[i] / 255.0;
     const barHeight = amplitude * height * 0.8; // Höhe der Balken basierend auf dem Frequenzwert
     

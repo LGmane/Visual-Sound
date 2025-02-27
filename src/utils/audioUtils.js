@@ -34,11 +34,17 @@ export async function setupAudio(deviceId) {
         // **2. Hochpassfilter gegen Rauschen**
         const highpassFilter = globalAudioContext.createBiquadFilter();
         highpassFilter.type = "highpass";
-        highpassFilter.frequency.value = 80; // Filtert Frequenzen unter 80 Hz (Brummen/Rauschen)
+        highpassFilter.frequency.value = 20; // Filtert Frequenzen unter 20 Hz
 
-        // **3. Verbindungen setzen**
+        // **3. Tiefpassfilter gegen hohe Frequenzen**
+        const lowpassFilter = globalAudioContext.createBiquadFilter();
+        lowpassFilter.type = "lowpass";
+        lowpassFilter.frequency.value = 50000; // Filtert Frequenzen über 20.000 Hz
+
+        // **4. Verbindungen setzen**
         source.connect(highpassFilter);
-        highpassFilter.connect(gainNode);
+        highpassFilter.connect(lowpassFilter);
+        lowpassFilter.connect(gainNode);
         gainNode.connect(analyser);
 
         analyser.fftSize = 2048;
