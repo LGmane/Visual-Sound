@@ -11,59 +11,54 @@ body {
   color: rgb(255, 255, 255);
 }
 
-h1, h3 {
-  margin: 20px 0;
-  text-align: center;
-  color: white;
-}
-
-h1 {
-  font-size: 2rem;
-}
-
-h3 {
-  font-size: 1.5rem;
-}
-
 /* ----------------------- */
 /* 📐 LAYOUT UND CONTAINER */
 /* ----------------------- */
 
 .app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-/* Visualizer Container */
-.visualizer-container {
   position: relative;
-  width: 800px;
-  height: 400px;
-  margin: 10px auto;
-  background-color: black;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start; /* Obere Ausrichtung */
 }
 
-/* Fullscreen-Modus */
-.visualizer-container.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1000;
-  justify-content: center;
+/* ----------------------- */
+/* 🎯 ZENTRIERTER HEADER */
+/* ----------------------- */
+
+.header-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  z-index: 5; /* Über dem Canvas, aber unter der restlichen UI */
+  pointer-events: none;
 }
 
-/* Canvas-Styling */
-canvas {
-  border: 1px solid white;
+h1, h3 {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  color: white;
+  line-height: 1.2em;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-top: 415px;
+
+}
+
+h3 {
+  font-size: 2rem;
   margin-top: 10px;
 }
 
@@ -103,13 +98,6 @@ canvas {
   text-align: center;
 }
 
-.device-selector select:hover,
-.device-selector select:focus {
-  background-color: var(--highlight-color);
-  color: black;
-  border-color: var(--highlight-color);
-}
-
 /* ----------------------- */
 /* 🕹️ BUTTON STYLES */
 /* ----------------------- */
@@ -137,27 +125,29 @@ canvas {
   border-color: yellow;
 }
 
+/* ----------------------- */
 /* 🎬 Fullscreen Button Style */
+/* ----------------------- */
+
 .fullscreen-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  z-index: 1100;
-  color: var(--color-white);
-  font-weight: bold;
-  font-size: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
-  border: 2px solid var(--color-white);
-  padding: 8px 16px;
-  border-radius: 8px;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 10;
+  padding: 5px 10px;
+  border: 1px solid white;
+  background-color: black;
+  color: white;
   cursor: pointer;
-  transition: var(--transition-standard), transform 0.2s;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .fullscreen-button:hover {
-  background-color: var(--color-white);
-  color: var(--color-black);
-  transform: scale(1.05);
+  background-color: white;
+  color: black;
+  transform: scale(1.1);
 }
 
 /* ----------------------- */
@@ -169,6 +159,7 @@ canvas {
   flex-wrap: nowrap;
   gap: 10px;
   align-items: flex-start;
+  margin-top: 10px;
 }
 
 .visualizer-button-group {
@@ -179,51 +170,6 @@ canvas {
 
 .visualizer-button-group .visualizer-button + .visualizer-button {
   margin-top: 5px;
-}
-
-/* ----------------------- */
-/* 🎚️ SLIDER STYLING */
-/* ----------------------- */
-
-.bar-width-slider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 15px;
-}
-
-.bar-width-slider label {
-  color: white;
-  font-size: 1rem;
-  margin-bottom: 10px;
-}
-
-.simple-slider {
-  width: 150px;
-  height: 6px;
-  appearance: none;
-  background: #4a4a4a;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-}
-
-.simple-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid #4a4a4a;
-}
-
-.simple-slider::-webkit-slider-thumb:hover {
-  background: #f1f1f1;
-}
-
-.simple-slider:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5);
 }
 
 /* ----------------------- */
@@ -259,6 +205,19 @@ canvas {
 }
 
 /* ----------------------- */
+/* Canvas als Hintergrund */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; 
+  border: none; 
+  background-color: black; 
+}
+
+/* ----------------------- */
 /* 🚦 UTILITY STYLES */
 /* ----------------------- */
 
@@ -277,3 +236,48 @@ canvas {
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
 .p-10 { padding: 10px; }
+
+/* ----------------------- */
+/* 🎚️ SLIDER STYLING */
+/* ----------------------- */
+
+.bar-width-slider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.bar-width-slider label {
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.simple-slider {
+  width: 200px;
+  height: 6px;
+  appearance: none;
+  background: #4a4a4a;
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+}
+
+.simple-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #4a4a4a;
+}
+
+.simple-slider::-webkit-slider-thumb:hover {
+  background: #f1f1f1;
+}
+
+.simple-slider:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5);
+}

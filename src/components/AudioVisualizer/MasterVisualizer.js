@@ -1,6 +1,6 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Leert das Canvas, wenn kein Visualizer aktiv ist
+// src/components/AudioVisualizer/MasterVisualizer.js - Fullscreen-Modus nur mit ESC verlassen
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
 import { Visualizers } from './configs';
 
@@ -10,30 +10,68 @@ function MasterVisualizer({
   waveColor,
   frequencyColor,
   isFrequencyCentered,
-  barWidth,
-  waveformThickness,
-  isFullscreen,
 }) {
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(ratio, ratio);
+      }
+    }
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      if (containerRef.current) {
+        if (containerRef.current.requestFullscreen) {
+          containerRef.current.requestFullscreen();
+        } 
+        setIsFullscreen(true);
+      }
+    }
+  };
+
+  const exitFullscreenHandler = () => {
+    if (!document.fullscreenElement) {
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('fullscreenchange', exitFullscreenHandler);
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', exitFullscreenHandler);
+      window.removeEventListener('resize', resizeCanvas);
+    };
+  }, [resizeCanvas]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
 
-    // 🧹 Leert das Canvas, wenn kein Visualizer aktiv ist
     if (!selectedDevice || activeVisualizers.length === 0) {
-      console.log('Kein Visualizer aktiv oder kein Gerät ausgewählt.');
       if (canvasCtx) {
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = 'black'; // 🖤 Schwarzer Hintergrund
+        canvasCtx.fillStyle = 'black'; 
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
       }
       return;
     }
-
-    console.log('Aktive Visualizer:', activeVisualizers);
 
     let animationActive = true;
 
@@ -44,41 +82,25 @@ function MasterVisualizer({
         if (!animationActive) return;
 
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = 'black'; // 🖤 Schwarzer Hintergrund immer als Standard
+        canvasCtx.fillStyle = 'black'; 
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const baseWidth = 800;
-        const baseHeight = 400;
-        const scaleFactor = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
-
-        // 🎵 Frequenzvisualisierung
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
-          console.log('Zeige Frequency Visualizer');
           Visualizers['frequency'](canvas, analyser, dataArray, {
             frequencyColor,
             centered: isFrequencyCentered,
-            barWidth: barWidth * scaleFactor,
           });
         }
 
-        // 🌊 Wellenformvisualisierung
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
-          console.log('Zeige Waveform Visualizer');
           Visualizers['waveform'](canvas, analyser, dataArray, {
-            waveColor,
-            thickness: waveformThickness * scaleFactor,
+            waveColor, // Dynamische Farbe vom Colorpicker
           });
         }
 
-        // 🔵 CircleVisualizer
         if (activeVisualizers.includes('circle') && Visualizers['circle']) {
-          console.log('Zeige Circle Visualizer');
           Visualizers['circle'](canvas, analyser, dataArray, {
-            waveColor,
-            thickness: 2,
-            amplitudeMultiplier: 5000,
-            amplitudeBoost: 5,
-            scale: 1,
+            waveColor: 'rgba(255, 255, 0, 0.7)', // Fixe gelbe Farbe
           });
         }
 
@@ -99,23 +121,20 @@ function MasterVisualizer({
     waveColor,
     frequencyColor,
     isFrequencyCentered,
-    barWidth,
-    waveformThickness,
   ]);
 
   return (
     <div ref={containerRef} className="visualizer-container">
       <canvas
         ref={canvasRef}
-        width={isFullscreen ? window.innerWidth : 800}
-        height={isFullscreen ? window.innerHeight : 400}
-        style={{
-          width: '100%',
-          height: '100%',
-          border: isFullscreen ? 'none' : '1px solid white',
-          backgroundColor: 'black',
-        }}
+        className="visualizer-canvas"
       ></canvas>
+
+      {!isFullscreen && (
+        <button className="fullscreen-button" onClick={toggleFullscreen}>
+          ⛶
+        </button>
+      )}
     </div>
   );
 }

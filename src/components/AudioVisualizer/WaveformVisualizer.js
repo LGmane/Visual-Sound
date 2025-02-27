@@ -5,9 +5,14 @@
  * Nutzt proportionale Skalierung, um auch im Fullscreen-Modus konsistent auszusehen.
  */
 
-export default function WaveformVisualizer(canvas, analyser, dataArray, { waveColor = 'rgb(0, 255, 0)', thickness = 2, scale = 1 }) {
+export default function WaveformVisualizer(
+  canvas, 
+  analyser, 
+  dataArray, 
+  { waveColor = 'rgb(0, 255, 0)' }
+) {
 
-  // 🛠 Validierungen: Überprüfen, ob die Eingaben korrekt sind
+  // 🛠 Validierungen
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('WaveformVisualizer: Invalid canvas element');
     return;
@@ -25,7 +30,7 @@ export default function WaveformVisualizer(canvas, analyser, dataArray, { waveCo
   analyser.getByteTimeDomainData(dataArray);
 
   // 🖌 Stileinstellungen für die Wellenform
-  canvasCtx.lineWidth = thickness * scale; // Linienbreite skaliert mit dem Canvas
+  canvasCtx.lineWidth = 2; // Fixe Linienbreite
   canvasCtx.strokeStyle = waveColor;
   canvasCtx.lineJoin = 'round';
   canvasCtx.lineCap = 'round';
@@ -33,25 +38,25 @@ export default function WaveformVisualizer(canvas, analyser, dataArray, { waveCo
 
   const { width, height } = canvas;
 
-  // 🧮 Berechnung der Abstände zwischen den Punkten
-  const sliceWidth = (width / dataArray.length) * scale;
+  // 🎯 Berechnung der exakten Slice-Breite
+  const sliceWidth = width / (dataArray.length - 1);
   let x = 0;
 
   // 🎨 Zeichnet die Wellenform basierend auf den Audiodaten
   for (let i = 0; i < dataArray.length; i++) {
-    const v = dataArray[i] / 128.0; // Normalisierung der Werte (0 bis 255 → ~0 bis 2)
-    const y = (v * height) / 2; // Skalierung auf Canvas-Höhe
+    const v = dataArray[i] / 128.0; 
+    const y = (v * height) / 2; 
 
     if (i === 0) {
-      canvasCtx.moveTo(x, y); // Startpunkt setzen
+      canvasCtx.moveTo(x, y); 
     } else {
-      canvasCtx.lineTo(x, y); // Linien zum nächsten Punkt ziehen
+      canvasCtx.lineTo(x, y); 
     }
 
     x += sliceWidth;
   }
 
-  // 🚦 Schließt die Linie mittig ab
+  // 🛠️ Sicherstellen, dass der letzte Punkt exakt am rechten Rand liegt
   canvasCtx.lineTo(width, height / 2);
   canvasCtx.stroke();
 }

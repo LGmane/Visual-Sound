@@ -1,44 +1,42 @@
-// src/components/AudioVisualizer/RandomVisualizer.js
-
+// src/components/AudioVisualizer/CircleVisualizer.js
 
 /**
- * 🎲 RandomVisualizer: Zeichnet eine dynamische, leuchtende Kreiswellenform basierend auf Audiodaten.
+ * 🎲 CircleVisualizer: Zeichnet eine dynamische, leuchtende Kreiswellenform basierend auf Audiodaten.
  * Nutzt Bezier-Kurven für weiche Übergänge und fügt einen intensiven Glow-Effekt hinzu.
  */
 
-export default function StarVisualizer(canvas, analyser, dataArray, { 
-    waveColor = 'rgba(0, 255, 255, 0.7)', 
-    thickness = 2, 
+export default function CircleVisualizer(canvas, analyser, dataArray, { 
+    waveColor = 'rgba(255, 255, 0, 0.7)', // 🌟 Standardfarbe: Gelb
     amplitudeMultiplier = 5000, 
     amplitudeBoost = 5, 
     scale = 1 
 }) {
     if (!(canvas instanceof HTMLCanvasElement)) {
-        console.error('RandomVisualizer: Invalid canvas element');
+        console.error('CircleVisualizer: Invalid canvas element');
         return;
     }
     if (typeof analyser.getByteTimeDomainData !== 'function') {
-        console.error('RandomVisualizer: Invalid analyser node');
+        console.error('CircleVisualizer: Invalid analyser node');
         return;
     }
     if (!(dataArray instanceof Uint8Array)) {
-        console.error('RandomVisualizer: dataArray must be an instance of Uint8Array');
+        console.error('CircleVisualizer: dataArray must be an instance of Uint8Array');
         return;
     }
 
     const canvasCtx = canvas.getContext('2d');
     analyser.getByteTimeDomainData(dataArray);
 
-    // 🎨 Setze Stiloptionen
-    canvasCtx.lineWidth = thickness * scale;
+    // 🎨 Setze Stiloptionen für den CircleVisualizer
+    canvasCtx.lineWidth = 2; // Fixe Linienbreite für Unabhängigkeit
     canvasCtx.strokeStyle = waveColor;
     canvasCtx.lineJoin = 'round';
     canvasCtx.lineCap = 'round';
     canvasCtx.beginPath();
 
-    // ✨ Intensiver, unabhängiger Glow-Effekt
-    canvasCtx.shadowBlur = 30; // Fester Glow, unabhängig von thickness
-    canvasCtx.shadowColor = 'white'; // Glow-Farbe
+    // ✨ Unabhängiger Glow-Effekt
+    canvasCtx.shadowBlur = 30; 
+    canvasCtx.shadowColor = 'white'; 
 
     const { width, height } = canvas;
     const centerX = width / 2;

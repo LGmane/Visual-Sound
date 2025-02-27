@@ -11,7 +11,6 @@ function App() {
   const { selectedDevice, setSelectedDevice } = useContext(AudioContext); // 🎯 selectedDevice wieder hinzugefügt
 
   const [activeVisualizers, setActiveVisualizers] = useState([]);
-  const [showBackgroundVideo, setShowBackgroundVideo] = useState(false);
 
   const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)');
   const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)');
@@ -73,7 +72,6 @@ function App() {
         waveColor={waveColor}
         frequencyColor={frequencyColor}
         volumeColor={volumeColor}
-        showBackgroundVideo={showBackgroundVideo}
         isFrequencyCentered={isFrequencyCentered}
         barWidth={barWidth}
         waveformThickness={waveformThickness}
