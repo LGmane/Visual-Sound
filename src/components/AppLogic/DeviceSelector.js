@@ -1,4 +1,4 @@
-// src/components/AppLogic/DeviceSelector.js - Ermöglicht die Auswahl des Audioeingabegeräts, bevorzugt automatisch "Blackhole" bei Verfügbarkeit
+// src/components/AppLogic/DeviceSelector.js - Bevorzugt Mikrofon als Standardgerät und zeigt alle verfügbaren Audioeingabegeräte an
 
 import React, { useState, useEffect } from "react";
 import "../../styles/App.css";
@@ -6,7 +6,7 @@ import "../../styles/App.css";
 /**
  * 🎙️ DeviceSelector Komponente
  * Bietet eine Dropdown-Liste zur Auswahl des Audioeingabegeräts.
- * Bevorzugt automatisch "Blackhole", falls verfügbar.
+ * Bevorzugt automatisch das Mikrofon, falls verfügbar.
  * 
  * @param {Function} onDeviceSelect - Callback-Funktion zur Übergabe des ausgewählten Geräte-ID
  */
@@ -18,19 +18,20 @@ function DeviceSelector({ onDeviceSelect }) {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const deviceList = await navigator.mediaDevices.enumerateDevices();
-        
+
         // 🎧 Filtert nur Audioeingabegeräte heraus
         const audioDevices = deviceList.filter((device) => device.kind === "audioinput");
         setDevices(audioDevices);
 
-        // 🔍 Bevorzugt automatisch das "Blackhole"-Gerät, falls vorhanden
-        const blackholeDevice = audioDevices.find((device) => 
-          device.label.toLowerCase().includes("blackhole")
+        // 🔍 Bevorzugt automatisch ein Mikrofon-Gerät, falls vorhanden
+        const microphoneDevice = audioDevices.find((device) =>
+          device.label.toLowerCase().includes("microphone")
         );
 
-        // 🚦 Setzt entweder "Blackhole" oder das erste verfügbare Gerät als Standard
-        const defaultDevice = blackholeDevice || audioDevices[0];
+        // 🚦 Setzt entweder das Mikrofon oder das erste verfügbare Gerät als Standard
+        const defaultDevice = microphoneDevice || audioDevices[0];
 
         if (defaultDevice) {
           setSelectedDevice(defaultDevice.deviceId);

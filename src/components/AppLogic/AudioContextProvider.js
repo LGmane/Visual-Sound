@@ -19,19 +19,20 @@ export function AudioContextProvider({ children }) {
   useEffect(() => {
     console.log('AudioContextProvider initialized');
     console.log('Initial State:', { selectedDevice, visualizerType });
-  }, []);
+  }, []); // 🚦 Nur einmal bei der Initialisierung ausführen
 
   // 🆕 Debugging: Überwachung des ausgewählten Audiogeräts
   useEffect(() => {
     if (selectedDevice) {
       console.log('Selected Device updated:', selectedDevice);
     }
-  }, [selectedDevice]);
+  }, [selectedDevice]); // 🛠️ Abhängigkeit nur 'selectedDevice'
 
   // 🆕 Debugging: Überwachung des Visualizer-Typs
   useEffect(() => {
     console.log('Visualizer Type updated:', visualizerType);
-  }, [visualizerType]);
+    console.log('Selected Device:', selectedDevice);
+  }, [selectedDevice, visualizerType]); // 🚦 Abhängigkeit nur 'visualizerType'
 
   return (
     <AudioContext.Provider

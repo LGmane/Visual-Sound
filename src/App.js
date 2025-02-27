@@ -7,7 +7,9 @@ import VisualizerSelector from './components/AppLogic/VisualizerSelector';
 import MasterVisualizer from './components/AudioVisualizer/MasterVisualizer';
 import './styles/App.css';
 function App() {
-  const { selectedDevice, setSelectedDevice } = useContext(AudioContext);
+  //const { selectedDevice, setSelectedDevice } = useContext(AudioContext);
+  const { setSelectedDevice } = useContext(AudioContext); // 'selectedDevice' entfernt
+
 
   // 🎨 State-Verwaltung für Visualizer und UI-Einstellungen
   const [activeVisualizers, setActiveVisualizers] = useState([]); // Aktive Visualisierungstypen

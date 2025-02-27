@@ -1,6 +1,5 @@
 // src/components/AudioVisualizer/RandomVisualizer.js
 
-import { calculateVolume } from '../../utils/audioCalculations';
 
 /**
  * 🎲 RandomVisualizer: Zeichnet eine dynamische, leuchtende Kreiswellenform basierend auf Audiodaten.
