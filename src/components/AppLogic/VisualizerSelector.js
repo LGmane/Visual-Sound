@@ -1,4 +1,4 @@
-// src/components/AppLogic/VisualizerSelector.js - Korrigiert: Nur Frequency, Waveform und Circle Visualizer
+// src/components/AppLogic/VisualizerSelector.js - Korrigiert: Nur Frequency und Waveform Visualizer reagieren auf den Colorpicker
 
 import React from 'react';
 import "../../styles/App.css";
@@ -12,10 +12,6 @@ function VisualizerSelector({
   toggleVisualizer,
   toggleFrequencyCentered,
   isFrequencyCentered,
-  barWidth,
-  handleBarWidthChange,
-  waveformThickness,
-  handleWaveformThicknessChange,
   waveformColor,
   handleWaveformColorChange,
   frequencyColor,
@@ -26,7 +22,7 @@ function VisualizerSelector({
   const visualizers = [
     { id: 'waveform', label: 'Waveform Visualizer' },
     { id: 'frequency', label: 'Frequency Visualizer' },
-    { id: 'circle', label: 'Circle Visualizer' },
+    { id: 'circle', label: 'Circle Visualizer' }, // Circle bleibt immer gelb
   ];
 
   // 🎨 Vordefinierte Farbpalette
@@ -49,7 +45,6 @@ function VisualizerSelector({
         {visualizers.map(({ id, label }) => (
           <div key={id} className="visualizer-button-group">
             
-            {/* 🎛️ Umschalt-Button für jeden Visualizer */}
             <button
               onClick={() => toggleVisualizer(id)}
               className={activeVisualizers.includes(id) ? 'visualizer-button active' : 'visualizer-button'}
@@ -57,7 +52,6 @@ function VisualizerSelector({
               {label}
             </button>
   
-            {/* 🎨 Optionen für den Frequency Visualizer */}
             {id === 'frequency' && activeVisualizers.includes('frequency') && (
               <>
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
@@ -70,20 +64,7 @@ function VisualizerSelector({
                     />
                   ))}
                 </div>
-  
-                <div className="bar-width-slider">
-                  <label htmlFor="bar-width">Bar Width: {barWidth}</label>
-                  <input
-                    type="range"
-                    id="bar-width"
-                    className="simple-slider"
-                    min="1"
-                    max="10"
-                    value={barWidth}
-                    onChange={handleBarWidthChange}
-                  />
-                </div>
-  
+
                 <button
                   onClick={toggleFrequencyCentered}
                   className="visualizer-button"
@@ -93,33 +74,17 @@ function VisualizerSelector({
               </>
             )}
   
-            {/* 🌊 Optionen für den Waveform Visualizer */}
             {id === 'waveform' && activeVisualizers.includes('waveform') && (
-              <>
-                <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
-                  {colorPalette.map((color) => (
-                    <div
-                      key={color}
-                      className={`color-segment ${color === waveformColor ? 'selected' : ''}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => handleWaveformColorChange(color)}
-                    />
-                  ))}
-                </div>
-  
-                <div className="bar-width-slider">
-                  <label htmlFor="waveform-thickness">Waveform Thickness: {waveformThickness}</label>
-                  <input
-                    type="range"
-                    id="waveform-thickness"
-                    className="simple-slider"
-                    min="1"
-                    max="10"
-                    value={waveformThickness}
-                    onChange={(event) => handleWaveformThicknessChange(parseInt(event.target.value, 10))}
+              <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
+                {colorPalette.map((color) => (
+                  <div
+                    key={color}
+                    className={`color-segment ${color === waveformColor ? 'selected' : ''}`}
+                    style={{ backgroundColor: color }}
+                    onClick={() => handleWaveformColorChange(color)}
                   />
-                </div>
-              </>
+                ))}
+              </div>
             )}
           </div>
         ))}

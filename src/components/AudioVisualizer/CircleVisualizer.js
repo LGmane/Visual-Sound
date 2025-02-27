@@ -1,42 +1,29 @@
 // src/components/AudioVisualizer/CircleVisualizer.js
 
-/**
- * 🎲 CircleVisualizer: Zeichnet eine dynamische, leuchtende Kreiswellenform basierend auf Audiodaten.
- * Nutzt Bezier-Kurven für weiche Übergänge und fügt einen intensiven Glow-Effekt hinzu.
- */
-
 export default function CircleVisualizer(canvas, analyser, dataArray, { 
     waveColor = 'rgba(255, 255, 0, 0.7)', // 🌟 Standardfarbe: Gelb
     amplitudeMultiplier = 5000, 
     amplitudeBoost = 5, 
     scale = 1 
 }) {
-    if (!(canvas instanceof HTMLCanvasElement)) {
-        console.error('CircleVisualizer: Invalid canvas element');
-        return;
-    }
-    if (typeof analyser.getByteTimeDomainData !== 'function') {
-        console.error('CircleVisualizer: Invalid analyser node');
-        return;
-    }
-    if (!(dataArray instanceof Uint8Array)) {
-        console.error('CircleVisualizer: dataArray must be an instance of Uint8Array');
-        return;
-    }
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+    if (typeof analyser.getByteTimeDomainData !== 'function') return;
+    if (!(dataArray instanceof Uint8Array)) return;
 
     const canvasCtx = canvas.getContext('2d');
     analyser.getByteTimeDomainData(dataArray);
 
     // 🎨 Setze Stiloptionen für den CircleVisualizer
-    canvasCtx.lineWidth = 2; // Fixe Linienbreite für Unabhängigkeit
+    canvasCtx.save(); // Speichert den aktuellen Zustand des Canvas-Kontexts
+    canvasCtx.lineWidth = 2;
     canvasCtx.strokeStyle = waveColor;
     canvasCtx.lineJoin = 'round';
     canvasCtx.lineCap = 'round';
     canvasCtx.beginPath();
 
-    // ✨ Unabhängiger Glow-Effekt
-    canvasCtx.shadowBlur = 30; 
-    canvasCtx.shadowColor = 'white'; 
+    // ✨ Intensiver Glow-Effekt NUR für den CircleVisualizer
+    canvasCtx.shadowBlur = 15;
+    canvasCtx.shadowColor = 'yellow';
 
     const { width, height } = canvas;
     const centerX = width / 2;
@@ -78,4 +65,7 @@ export default function CircleVisualizer(canvas, analyser, dataArray, {
 
     canvasCtx.closePath();
     canvasCtx.stroke();
+
+    // 🚫 Deaktiviere den Glow-Effekt für andere Visualizer
+    canvasCtx.restore(); // Stellt den vorherigen Canvas-Kontext wieder her
 }

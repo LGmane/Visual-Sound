@@ -40,6 +40,10 @@ export default function FrequencyVisualizer(
 
   canvasCtx.clearRect(0, 0, width, height);
 
+  // 🛠️ Kein Glow-Effekt für den Frequency Visualizer
+  canvasCtx.shadowBlur = 0; 
+  canvasCtx.shadowColor = 'transparent';
+
   // 🎨 Zeichnet die Frequenzbalken auf das Canvas
   for (let i = 0; i < maxIndex; i++) {
     const amplitude = dataArray[i] / 255.0;
@@ -55,6 +59,6 @@ export default function FrequencyVisualizer(
       canvasCtx.fillRect(x, height - barHeight, barWidth, barHeight);
     }
 
-    x += barWidth; // Automatische Füllung ohne Lücken
+    x += barWidth; 
   }
 }

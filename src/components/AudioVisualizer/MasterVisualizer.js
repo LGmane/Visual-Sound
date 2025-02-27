@@ -1,4 +1,4 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Fullscreen-Modus nur mit ESC verlassen
+// src/components/AudioVisualizer/MasterVisualizer.js - Bereinigt: Frequency Visualizer nutzt dynamische Farbe und Zentrierung
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
@@ -7,9 +7,9 @@ import { Visualizers } from './configs';
 function MasterVisualizer({
   selectedDevice,
   activeVisualizers,
-  waveColor,
-  frequencyColor,
-  isFrequencyCentered,
+  waveColor, // Nur Waveform nutzt den Colorpicker
+  frequencyColor, // Dynamische Farbe für Frequency Visualizer
+  isFrequencyCentered, // Zentrierungsoption für Frequency Visualizer
 }) {
 
   const canvasRef = useRef(null);
@@ -35,9 +35,7 @@ function MasterVisualizer({
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       if (containerRef.current) {
-        if (containerRef.current.requestFullscreen) {
-          containerRef.current.requestFullscreen();
-        } 
+        containerRef.current.requestFullscreen?.();
         setIsFullscreen(true);
       }
     }
@@ -65,11 +63,9 @@ function MasterVisualizer({
     const canvasCtx = canvas.getContext('2d');
 
     if (!selectedDevice || activeVisualizers.length === 0) {
-      if (canvasCtx) {
-        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = 'black'; 
-        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      canvasCtx?.clearRect(0, 0, canvas.width, canvas.height);
+      canvasCtx.fillStyle = 'black';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
       return;
     }
 
@@ -82,7 +78,7 @@ function MasterVisualizer({
         if (!animationActive) return;
 
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-        canvasCtx.fillStyle = 'black'; 
+        canvasCtx.fillStyle = 'black';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
@@ -94,13 +90,13 @@ function MasterVisualizer({
 
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
           Visualizers['waveform'](canvas, analyser, dataArray, {
-            waveColor, // Dynamische Farbe vom Colorpicker
+            waveColor,
           });
         }
 
         if (activeVisualizers.includes('circle') && Visualizers['circle']) {
           Visualizers['circle'](canvas, analyser, dataArray, {
-            waveColor: 'rgba(255, 255, 0, 0.7)', // Fixe gelbe Farbe
+            waveColor: 'rgba(255, 255, 0, 0.7)',
           });
         }
 
@@ -125,10 +121,7 @@ function MasterVisualizer({
 
   return (
     <div ref={containerRef} className="visualizer-container">
-      <canvas
-        ref={canvasRef}
-        className="visualizer-canvas"
-      ></canvas>
+      <canvas ref={canvasRef} className="visualizer-canvas"></canvas>
 
       {!isFullscreen && (
         <button className="fullscreen-button" onClick={toggleFullscreen}>

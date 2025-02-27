@@ -29,20 +29,24 @@ export default function WaveformVisualizer(
   const canvasCtx = canvas.getContext('2d');
   analyser.getByteTimeDomainData(dataArray);
 
-  // 🖌 Stileinstellungen für die Wellenform
-  canvasCtx.lineWidth = 2; // Fixe Linienbreite
+  canvasCtx.save();
+
+  // 🖌 Stileinstellungen für die Wellenform mit Glow-Effekt
+  canvasCtx.lineWidth = 2;
   canvasCtx.strokeStyle = waveColor;
   canvasCtx.lineJoin = 'round';
   canvasCtx.lineCap = 'round';
+
+  canvasCtx.shadowBlur = 15;
+  canvasCtx.shadowColor = waveColor;
+
   canvasCtx.beginPath();
 
   const { width, height } = canvas;
 
-  // 🎯 Berechnung der exakten Slice-Breite
   const sliceWidth = width / (dataArray.length - 1);
   let x = 0;
 
-  // 🎨 Zeichnet die Wellenform basierend auf den Audiodaten
   for (let i = 0; i < dataArray.length; i++) {
     const v = dataArray[i] / 128.0; 
     const y = (v * height) / 2; 
@@ -56,7 +60,8 @@ export default function WaveformVisualizer(
     x += sliceWidth;
   }
 
-  // 🛠️ Sicherstellen, dass der letzte Punkt exakt am rechten Rand liegt
   canvasCtx.lineTo(width, height / 2);
   canvasCtx.stroke();
+
+  canvasCtx.restore();
 }
