@@ -1,4 +1,4 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Bereinigt: Frequency Visualizer nutzt dynamische Farbe und Zentrierung
+// src/components/AudioVisualizer/MasterVisualizer.js - Bereinigt: Frequency, Waveform, Circle und Oscilloscope Visualizer
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
@@ -97,6 +97,12 @@ function MasterVisualizer({
         if (activeVisualizers.includes('circle') && Visualizers['circle']) {
           Visualizers['circle'](canvas, analyser, dataArray, {
             waveColor: 'rgba(255, 255, 0, 0.7)',
+          });
+        }
+
+        if (activeVisualizers.includes('oscilloscope') && Visualizers['oscilloscope']) {
+          Visualizers['oscilloscope'](canvas, analyser, dataArray, {
+            waveColor: 'rgba(255, 255, 255, 1.0)',
           });
         }
 
