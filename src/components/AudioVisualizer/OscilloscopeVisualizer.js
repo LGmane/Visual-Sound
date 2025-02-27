@@ -1,4 +1,4 @@
-// src/components/AudioVisualizer/OscilloscopeVisualizer.js - Bälle mit Verbindungen
+// src/components/AudioVisualizer/OscilloscopeVisualizer.js - Der dynamische Punkt mit angepasstem Vibrationsbereich
 
 import { calculateVolume, calculateAverageAmplitude, calculateOscilloscopePosition, applyInertia } from '../../utils/audioCalculations';
 
@@ -6,7 +6,7 @@ export default function OscilloscopeVisualizer(
   canvas,
   analyser,
   dataArray,
-  { color = 'rgba(255, 255, 255, 1.0)', glowIntensity = 30, chaosFactor = 200, minRadius = 2, maxRadius = 8, maxBalls = 30 }
+  { color = 'rgba(255, 255, 255, 1.0)', glowIntensity = 30, chaosFactor = 150, minRadius = 5, maxRadius = 30, maxBalls = 20, maxMovementRange = 150 }
 ) {
   if (!(canvas instanceof HTMLCanvasElement)) return;
   if (typeof analyser.getByteTimeDomainData !== 'function') return;
@@ -24,8 +24,9 @@ export default function OscilloscopeVisualizer(
   const volume = calculateVolume(dataArray); // Lautstärke im Bereich 0 bis 1
   const amplitude = calculateAverageAmplitude(dataArray) / 255; // Amplitude als Wert zwischen 0 und 1
   
-  // Berechne chaotische Verschiebung für die Position basierend auf Lautstärke
-  const dynamicChaosFactor = chaosFactor * volume * 100; // Chaos stärker bei hoher Lautstärke
+  // Berechne die chaotische Verschiebung für die Position, basierend auf Lautstärke und Chaosfaktor
+  // Wenn das Volume gering ist, wird das Zappeln fast null.
+  const dynamicChaosFactor = chaosFactor * Math.pow(volume, 2) * 8 * maxMovementRange; // Chaos stärker bei hoher Lautstärke, weniger bei niedriger Lautstärke
 
   // Berechne die Anzahl der Bälle basierend auf der Lautstärke, aber stelle sicher, dass mindestens 1 Ball angezeigt wird
   const ballCount = Math.max(1, Math.round(volume * maxBalls)); // Minimum 1 Ball, auch bei niedrigster Lautstärke
@@ -44,8 +45,12 @@ export default function OscilloscopeVisualizer(
     // Zufällige Position der Bälle um den Mittelpunkt
     const { x, y } = calculateOscilloscopePosition(centerX, centerY, amplitude, dynamicChaosFactor);
 
-    // Zufällige Größe für jeden Ball basierend auf Lautstärke
-    const radius = minRadius + volume * (maxRadius - minRadius); // Dynamischer Radius zwischen min und max
+    // Umgekehrte Berechnung des Radius zur Lautstärke mit logarithmischer Skalierung für eine sanftere Veränderung
+    const volumeFactor = Math.log(1 + volume * 9); // Logarithmische Skalierung für die Lautstärke
+    let radius = maxRadius - volumeFactor * (maxRadius - minRadius); // Verändert sich weniger extrem
+
+    // Stelle sicher, dass der Radius niemals negativ wird
+    radius = Math.max(radius, minRadius); // Der Radius kann nie kleiner als minRadius sein
 
     // Verwende Inertia für eine sanfte Bewegung
     const targetX = applyInertia(centerX, x);
