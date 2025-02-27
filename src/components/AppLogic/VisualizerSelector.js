@@ -1,4 +1,4 @@
-// src/components/AppLogic/VisualizerSelector.js - Ermöglicht die Auswahl und Konfiguration der verschiedenen Visualizer und deren Einstellungen
+// src/components/AppLogic/VisualizerSelector.js - Korrigiert: Nur Frequency, Waveform und Circle Visualizer
 
 import React from 'react';
 import "../../styles/App.css";
@@ -20,15 +20,13 @@ function VisualizerSelector({
   handleWaveformColorChange,
   frequencyColor,
   handleFrequencyColorChange,
-  volumeColor,
-  handleVolumeColorChange,
 }) {
   
   // 🎨 Verfügbare Visualizer und deren Bezeichnungen
   const visualizers = [
     { id: 'waveform', label: 'Waveform Visualizer' },
     { id: 'frequency', label: 'Frequency Visualizer' },
-    { id: 'volume', label: 'Volume Visualizer' },
+    { id: 'circle', label: 'Circle Visualizer' },
   ];
 
   // 🎨 Vordefinierte Farbpalette
@@ -62,7 +60,6 @@ function VisualizerSelector({
             {/* 🎨 Optionen für den Frequency Visualizer */}
             {id === 'frequency' && activeVisualizers.includes('frequency') && (
               <>
-                {/* 🎨 Farbwahl */}
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
                   {colorPalette.map((color) => (
                     <div
@@ -74,7 +71,6 @@ function VisualizerSelector({
                   ))}
                 </div>
   
-                {/* 🎚️ Slider für Bar Width */}
                 <div className="bar-width-slider">
                   <label htmlFor="bar-width">Bar Width: {barWidth}</label>
                   <input
@@ -88,7 +84,6 @@ function VisualizerSelector({
                   />
                 </div>
   
-                {/* 🎯 Button für zentrierte Darstellung */}
                 <button
                   onClick={toggleFrequencyCentered}
                   className="visualizer-button"
@@ -101,7 +96,6 @@ function VisualizerSelector({
             {/* 🌊 Optionen für den Waveform Visualizer */}
             {id === 'waveform' && activeVisualizers.includes('waveform') && (
               <>
-                {/* 🎨 Farbwahl */}
                 <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
                   {colorPalette.map((color) => (
                     <div
@@ -113,7 +107,6 @@ function VisualizerSelector({
                   ))}
                 </div>
   
-                {/* 🎚️ Slider für Waveform Thickness */}
                 <div className="bar-width-slider">
                   <label htmlFor="waveform-thickness">Waveform Thickness: {waveformThickness}</label>
                   <input
@@ -128,36 +121,11 @@ function VisualizerSelector({
                 </div>
               </>
             )}
-  
-             {/* 📈 Optionen für den Volume Visualizer */}
-             {id === 'volume' && activeVisualizers.includes('volume') && (
-              <>
-                {/* 🎨 Farbwahl */}
-                <div className="color-picker-button" onClick={(e) => e.stopPropagation()}>
-                  {colorPalette.map((color) => (
-                    <div
-                      key={color}
-                      className={`color-segment ${color === volumeColor ? 'selected' : ''}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => handleVolumeColorChange(color)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
           </div>
         ))}
-  
-        {/* 🎲 RandomVisualizer Button */}
-        <button
-          onClick={() => toggleVisualizer('random')}
-          className={activeVisualizers.includes('random') ? 'visualizer-button active' : 'visualizer-button'}
-        >
-          RandomVisualizer
-        </button>
-  
       </div>
     </div>
   );
 }
+
 export default VisualizerSelector;

@@ -1,4 +1,4 @@
-// src/App.js - Hauptkomponente der Anwendung, verwaltet globale Zustände und koordiniert die Darstellung der Visualizer und Einstellungen
+// src/App.js - Fix: Übergabe von selectedDevice an den MasterVisualizer
 
 import React, { useContext, useState, useEffect } from 'react';
 import { AudioContext } from './components/AppLogic/AudioContextProvider';
@@ -6,29 +6,23 @@ import DeviceSelector from './components/AppLogic/DeviceSelector';
 import VisualizerSelector from './components/AppLogic/VisualizerSelector';
 import MasterVisualizer from './components/AudioVisualizer/MasterVisualizer';
 import './styles/App.css';
+
 function App() {
-  //const { selectedDevice, setSelectedDevice } = useContext(AudioContext);
-  const { setSelectedDevice } = useContext(AudioContext); // 'selectedDevice' entfernt
+  const { selectedDevice, setSelectedDevice } = useContext(AudioContext); // 🎯 selectedDevice wieder hinzugefügt
 
+  const [activeVisualizers, setActiveVisualizers] = useState([]);
+  const [showBackgroundVideo, setShowBackgroundVideo] = useState(false);
 
-  // 🎨 State-Verwaltung für Visualizer und UI-Einstellungen
-  const [activeVisualizers, setActiveVisualizers] = useState([]); // Aktive Visualisierungstypen
-  const [showBackgroundVideo, setShowBackgroundVideo] = useState(false); // Steuerung des Hintergrundvideos
+  const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)');
+  const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)');
+  const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)');
 
-  // 🎨 Farben für die Visualisierungen
-  const [waveColor, setWaveColor] = useState('rgb(0, 255, 0)'); // Grün für Wellenform
-  const [frequencyColor, setFrequencyColor] = useState('rgb(255, 0, 0)'); // Rot für Frequenz
-  const [volumeColor, setVolumeColor] = useState('rgb(0, 0, 255)'); // Blau für Lautstärke
-  
-  // 🛠 Visualizer-Einstellungen
-  const [isFrequencyCentered, setIsFrequencyCentered] = useState(false); // Zentrierung des Frequenz-Visualizers
-  const [barWidth, setBarWidth] = useState(2); // Breite der Frequenzbalken
-  const [waveformThickness, setWaveformThickness] = useState(2); // Dicke der Wellenlinien
+  const [isFrequencyCentered, setIsFrequencyCentered] = useState(false);
+  const [barWidth, setBarWidth] = useState(2);
+  const [waveformThickness, setWaveformThickness] = useState(2);
 
-  // 🖥 Fullscreen-Modus
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // 🔀 Umschalten eines Visualizers
   const toggleVisualizer = (visualizerType) => {
     setActiveVisualizers((prev) =>
       prev.includes(visualizerType)
@@ -37,38 +31,27 @@ function App() {
     );
   };
 
-  // 🎬 Hintergrundvideo ein-/ausschalten
-  const toggleBackgroundVideo = () => {
-    setShowBackgroundVideo((prev) => !prev);
-  };
-
-  // 🆙 Zentrierung des Frequenz-Visualizers umschalten
   const toggleFrequencyCentered = () => {
     setIsFrequencyCentered((prev) => !prev);
   };
 
-  // 🧮 Balkenbreite für den Frequenz-Visualizer ändern
   const handleBarWidthChange = (event) => {
     setBarWidth(parseInt(event.target.value, 10));
   };
 
-  // ✏️ Wellenlinien-Dicke ändern
   const handleWaveformThicknessChange = (value) => {
     setWaveformThickness(value);
   };
 
-  // 🎨 Frequenzfarbe ändern
   const handleFrequencyColorChange = (color) => {
-    console.log('Frequency color selected:', color); // Nur für Debugging-Zwecke
+    console.log('Frequency color selected:', color);
     setFrequencyColor(color);
   };
 
-  // 🔲 Fullscreen-Modus umschalten
   const handleFullscreenToggle = () => {
     setIsFullscreen((prev) => !prev);
   };
 
-  // 🆕 Fullscreen automatisch bei ESC-Taste beenden
   useEffect(() => {
     const handleEscape = (event) => {
       if (event.key === 'Escape' && isFullscreen) {
@@ -84,8 +67,8 @@ function App() {
     <div className="app">
       <h1>Visual Sound</h1>
 
-      {/* 🎶 MasterVisualizer rendert die aktive Audio-Visualisierung */}
       <MasterVisualizer
+        selectedDevice={selectedDevice} // 🎯 WICHTIG: selectedDevice wird nun korrekt übergeben!
         activeVisualizers={activeVisualizers}
         waveColor={waveColor}
         frequencyColor={frequencyColor}
@@ -98,12 +81,9 @@ function App() {
         onToggleFullscreen={handleFullscreenToggle}
       />
 
-      {/* 🛠 VisualizerSelector ermöglicht das Konfigurieren der Visualizer */}
       <VisualizerSelector
         activeVisualizers={activeVisualizers}
         toggleVisualizer={toggleVisualizer}
-        toggleBackgroundVideo={toggleBackgroundVideo}
-        showBackgroundVideo={showBackgroundVideo}
         toggleFrequencyCentered={toggleFrequencyCentered}
         isFrequencyCentered={isFrequencyCentered}
         barWidth={barWidth}
@@ -118,7 +98,6 @@ function App() {
         handleVolumeColorChange={setVolumeColor}
       />
 
-      {/* 🎧 DeviceSelector ermöglicht die Auswahl des Audioeingangs */}
       <DeviceSelector onDeviceSelect={setSelectedDevice} />
     </div>
   );

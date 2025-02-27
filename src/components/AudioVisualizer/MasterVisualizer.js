@@ -1,62 +1,59 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Diese Komponente rendert das Canvas für die Audio-Visualisierung und steuert den Fullscreen-Modus sowie die Hintergrundvideos.
+// src/components/AudioVisualizer/MasterVisualizer.js - Leert das Canvas, wenn kein Visualizer aktiv ist
 
-import React, { useEffect, useRef, useContext } from 'react';
-import { AudioContext } from '../AppLogic/AudioContextProvider';
-import { Visualizers } from './configs';
+import React, { useEffect, useRef } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
+import { Visualizers } from './configs';
 
 function MasterVisualizer({
+  selectedDevice,
   activeVisualizers,
   waveColor,
   frequencyColor,
-  volumeColor,
-  showBackgroundVideo,
   isFrequencyCentered,
   barWidth,
   waveformThickness,
   isFullscreen,
-  onToggleFullscreen,
 }) {
-  const { selectedDevice } = useContext(AudioContext);
+
   const canvasRef = useRef(null);
-  const videoRef = useRef(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!selectedDevice) return;
+    const canvas = canvasRef.current;
+    const canvasCtx = canvas.getContext('2d');
+
+    // 🧹 Leert das Canvas, wenn kein Visualizer aktiv ist
+    if (!selectedDevice || activeVisualizers.length === 0) {
+      console.log('Kein Visualizer aktiv oder kein Gerät ausgewählt.');
+      if (canvasCtx) {
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        canvasCtx.fillStyle = 'black'; // 🖤 Schwarzer Hintergrund
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      return;
+    }
+
+    console.log('Aktive Visualizer:', activeVisualizers);
 
     let animationActive = true;
 
     const initializeAudio = async () => {
-      const canvas = canvasRef.current;
-      const video = videoRef.current;
-
-      if (video && showBackgroundVideo) {
-        await video.play().catch((error) => {
-          console.error('Error attempting to play video:', error);
-        });
-      }
-
       const { analyser, dataArray } = await setupAudio(selectedDevice);
 
       const renderFrame = () => {
         if (!animationActive) return;
 
-        const canvasCtx = canvas.getContext('2d');
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-        if (video && showBackgroundVideo && video.readyState >= 2) {
-          canvasCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        } else {
-          canvasCtx.fillStyle = 'black';
-          canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        canvasCtx.fillStyle = 'black'; // 🖤 Schwarzer Hintergrund immer als Standard
+        canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
         const baseWidth = 800;
         const baseHeight = 400;
         const scaleFactor = Math.min(canvas.width / baseWidth, canvas.height / baseHeight);
 
+        // 🎵 Frequenzvisualisierung
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
+          console.log('Zeige Frequency Visualizer');
           Visualizers['frequency'](canvas, analyser, dataArray, {
             frequencyColor,
             centered: isFrequencyCentered,
@@ -64,26 +61,24 @@ function MasterVisualizer({
           });
         }
 
+        // 🌊 Wellenformvisualisierung
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
+          console.log('Zeige Waveform Visualizer');
           Visualizers['waveform'](canvas, analyser, dataArray, {
             waveColor,
             thickness: waveformThickness * scaleFactor,
           });
         }
 
-        if (activeVisualizers.includes('volume') && Visualizers['volume']) {
-          Visualizers['volume'](canvas, analyser, dataArray, {
-            volumeColor,
-          });
-        }
-
-        if (activeVisualizers.includes('random') && Visualizers['random']) {
-          Visualizers['random'](canvas, analyser, dataArray, {
+        // 🔵 CircleVisualizer
+        if (activeVisualizers.includes('circle') && Visualizers['circle']) {
+          console.log('Zeige Circle Visualizer');
+          Visualizers['circle'](canvas, analyser, dataArray, {
             waveColor,
-            thickness: waveformThickness * scaleFactor,
-            amplitudeMultiplier: 5000 * scaleFactor,
+            thickness: 2,
+            amplitudeMultiplier: 5000,
             amplitudeBoost: 5,
-            scaleFactor
+            scale: 1,
           });
         }
 
@@ -103,52 +98,13 @@ function MasterVisualizer({
     activeVisualizers,
     waveColor,
     frequencyColor,
-    volumeColor,
-    showBackgroundVideo,
     isFrequencyCentered,
     barWidth,
     waveformThickness,
   ]);
 
-  useEffect(() => {
-    const container = containerRef.current;
-
-    if (isFullscreen && container) {
-      container.requestFullscreen().catch((err) => {
-        console.error('Failed to enter fullscreen:', err);
-      });
-    } else if (!isFullscreen && document.fullscreenElement) {
-      document.exitFullscreen().catch((err) => {
-        console.error('Failed to exit fullscreen:', err);
-      });
-    }
-
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && isFullscreen) {
-        onToggleFullscreen();
-      }
-    };
-
-    window.addEventListener('fullscreenchange', handleFullscreenChange);
-
-    return () => {
-      window.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, [isFullscreen, onToggleFullscreen]);
-
   return (
-    <div
-      ref={containerRef}
-      className={`visualizer-container ${isFullscreen ? 'fullscreen' : ''}`}
-    >
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        loop
-        style={{ display: 'none' }}
-        src={require('../../assets/videos/Background.mp4')}
-      />
+    <div ref={containerRef} className="visualizer-container">
       <canvas
         ref={canvasRef}
         width={isFullscreen ? window.innerWidth : 800}
@@ -160,15 +116,6 @@ function MasterVisualizer({
           backgroundColor: 'black',
         }}
       ></canvas>
-
-      {!isFullscreen && (
-        <button
-          className="fullscreen-button"
-          onClick={onToggleFullscreen}
-        >
-          Fullscreen
-        </button>
-      )}
     </div>
   );
 }

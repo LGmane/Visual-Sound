@@ -6,7 +6,7 @@
  * Nutzt Bezier-Kurven für weiche Übergänge und fügt einen intensiven Glow-Effekt hinzu.
  */
 
-export default function RandomVisualizer(canvas, analyser, dataArray, { 
+export default function StarVisualizer(canvas, analyser, dataArray, { 
     waveColor = 'rgba(0, 255, 255, 0.7)', 
     thickness = 2, 
     amplitudeMultiplier = 5000, 

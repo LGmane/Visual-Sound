@@ -1,38 +1,54 @@
-// src/components/AppLogic/AudioContextProvider.js - Stellt den globalen Audiokontext bereit und verwaltet den Zustand des ausgewählten Audiogeräts und des Visualizer-Typs
+// src/components/AppLogic/AudioContextProvider.js - Sicherstellung, dass ein gültiges Audiogerät und Visualizer ausgewählt sind
 
 import React, { createContext, useState, useEffect } from 'react';
 
 // 🎧 Erstelle den globalen Audio-Kontext
 export const AudioContext = createContext();
 
-/**
- * 🌐 AudioContextProvider
- * Bietet den globalen Zustand für ausgewähltes Audiogerät und den aktuellen Visualizer-Typ.
- * 
- * @param {ReactNode} children - Die verschachtelten Komponenten, die Zugriff auf den Kontext benötigen
- */
 export function AudioContextProvider({ children }) {
-  const [selectedDevice, setSelectedDevice] = useState(null); // 🎙️ Ausgewähltes Audiogerät
-  const [visualizerType, setVisualizerType] = useState('frequency'); // 🎨 Standard-Visualizer ist 'frequency'
+  const [selectedDevice, setSelectedDevice] = useState(null); 
+  const [visualizerType, setVisualizerType] = useState('frequency'); 
+  const [devices, setDevices] = useState([]);
 
-  // 🛠️ Debugging: Initialisierung des Providers
   useEffect(() => {
     console.log('AudioContextProvider initialized');
     console.log('Initial State:', { selectedDevice, visualizerType });
-  }, []); // 🚦 Nur einmal bei der Initialisierung ausführen
+  }, []);
 
-  // 🆕 Debugging: Überwachung des ausgewählten Audiogeräts
-  useEffect(() => {
-    if (selectedDevice) {
-      console.log('Selected Device updated:', selectedDevice);
-    }
-  }, [selectedDevice]); // 🛠️ Abhängigkeit nur 'selectedDevice'
-
-  // 🆕 Debugging: Überwachung des Visualizer-Typs
   useEffect(() => {
     console.log('Visualizer Type updated:', visualizerType);
     console.log('Selected Device:', selectedDevice);
-  }, [selectedDevice, visualizerType]); // 🚦 Abhängigkeit nur 'visualizerType'
+  }, [visualizerType, selectedDevice]);
+
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        const deviceList = await navigator.mediaDevices.enumerateDevices();
+
+        const audioDevices = deviceList.filter((device) => device.kind === 'audioinput');
+        setDevices(audioDevices);
+
+        // Wähle automatisch das erste verfügbare Gerät oder bevorzugt "Microphone"
+        const defaultDevice = audioDevices.find((device) =>
+          ["microphone", "cable input", "line in", "stereo mix"].some((keyword) =>
+            device.label.toLowerCase().includes(keyword)
+          )
+        ) || audioDevices[0];
+
+        if (defaultDevice) {
+          console.log('Default Device Selected:', defaultDevice.label || defaultDevice.deviceId);
+          setSelectedDevice(defaultDevice.deviceId);
+        } else {
+          console.warn('Kein gültiges Audiogerät gefunden!');
+        }
+      } catch (error) {
+        console.error("Error fetching audio devices:", error);
+      }
+    };
+
+    fetchDevices();
+  }, []);
 
   return (
     <AudioContext.Provider
