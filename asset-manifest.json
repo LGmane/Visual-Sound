@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/visualsound/static/css/main.c873c27d.css",
-    "main.js": "/visualsound/static/js/main.6ed9020a.js",
-    "index.html": "/visualsound/index.html",
-    "main.c873c27d.css.map": "/visualsound/static/css/main.c873c27d.css.map",
-    "main.6ed9020a.js.map": "/visualsound/static/js/main.6ed9020a.js.map"
+    "main.css": "/Visual-Sound/static/css/main.c873c27d.css",
+    "main.js": "/Visual-Sound/static/js/main.6ed9020a.js",
+    "index.html": "/Visual-Sound/index.html",
+    "main.c873c27d.css.map": "/Visual-Sound/static/css/main.c873c27d.css.map",
+    "main.6ed9020a.js.map": "/Visual-Sound/static/js/main.6ed9020a.js.map"
   },
   "entrypoints": [
     "static/css/main.c873c27d.css",
