@@ -1,5 +1,10 @@
 # VisualSound
 
+## VisualSound ausprobieren
+
+Du kannst die Anwendung direkt im Browser testen, ohne sie lokal installieren zu müssen:
+[VisualSound - Live-Demo](https://dein-github-name.github.io/visualsound)
+
 ## 1. Projektbeschreibung
 
 **VisualSound** ist eine interaktive Webanwendung zur visuellen Darstellung von Audiosignalen. Sie ermöglicht die dynamische Visualisierung von Audioeingaben mithilfe verschiedener Visualisierungstechniken, wie z. B. Wellenform-, Frequenz-, Kreis- und Ball-Visualisierungen.
