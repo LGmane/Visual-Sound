@@ -1,51 +1,68 @@
-// src/components/AudioVisualizer/MasterVisualizer.js
-
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
 import { Visualizers } from './configs';
 
+/**
+ * 🎛️ MasterVisualizer: Combines and manages all available audio visualizers on a single canvas.
+ * Renders the Frequency, Waveform, Circle, and Ball visualizers based on user selection.
+ * Supports dynamic color, centering, and fullscreen mode for an immersive audio-visual experience.
+ * Automatically handles canvas resizing and maintains smooth animations.
+ */
+
 function MasterVisualizer({
   selectedDevice,
   activeVisualizers,
-  waveColor,
-  frequencyColor,
-  isFrequencyCentered,
-  isFullscreen,
-  onToggleFullscreen,
+  waveColor, // 🎨 Color for Waveform Visualizer
+  frequencyColor, // 📊 Dynamic color for Frequency Visualizer
+  isFrequencyCentered, // 📊 Centering option for Frequency Visualizer
 }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // 🧮 Resizes the canvas to match the screen size and handles high DPI displays
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ratio = window.devicePixelRatio || 1;
-
-      // Dynamische Berechnung der Bildschirmgröße unter Berücksichtigung der DPI
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-
-      // Setze die Canvas-Größe für Retina-Displays
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
 
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform before scaling
         ctx.scale(ratio, ratio);
       }
     }
   }, []);
 
+  // ⛶ Toggles fullscreen mode
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen?.();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen?.();
+      setIsFullscreen(false);
+    }
+  };
+
+  // 🚦 Handles exit from fullscreen mode
+  const exitFullscreenHandler = () => {
+    if (!document.fullscreenElement) {
+      setIsFullscreen(false);
+    }
+  };
+
   // 📏 Adds and removes event listeners for fullscreen and window resize events
   useEffect(() => {
+    document.addEventListener('fullscreenchange', exitFullscreenHandler);
+    resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas(); // Initial resize to ensure canvas size on first render
 
     return () => {
+      document.removeEventListener('fullscreenchange', exitFullscreenHandler);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [resizeCanvas]);
@@ -137,7 +154,7 @@ function MasterVisualizer({
       <canvas ref={canvasRef} className="visualizer-canvas"></canvas>
 
       {!isFullscreen && (
-        <button className="fullscreen-button" onClick={onToggleFullscreen}>
+        <button className="fullscreen-button" onClick={toggleFullscreen}>
           ⛶
         </button>
       )}
