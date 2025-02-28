@@ -182,8 +182,6 @@ Ein besonderer Dank gilt:
 - **VB-Audio** für das **VB-Audio Cable Input** (Windows)
 - Den Entwicklern der **Web Audio API**, die dieses Projekt möglich gemacht haben
 
-Falls du ebenfalls zum Projekt beigetragen hast und hier genannt werden möchtest, öffne gerne einen **Merge Request**!
-
 ## 8. Informationen
 
 **VisualSound** ist im Rahmen eines universitären Projekts an der **Hochschule der Medien (HdM)** in Stuttgart-Vaihingen entstanden. Das Projekt wurde innerhalb eines halben Jahres entwickelt und diente primär zu Studien- und Demonstrationszwecken.
