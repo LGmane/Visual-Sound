@@ -1,17 +1,17 @@
-// src/index.js - Einstiegspunkt der Anwendung, initialisiert React und den globalen AudioContextProvider
+// src/index.js - Entry point of the application, initializes React and the global AudioContextProvider
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/index.css'; // Basis-CSS-Datei
+import './styles/index.css'; // 🎨 Base CSS file for global styles
 import App from './App';
-import { AudioContextProvider } from './components/AppLogic/AudioContextProvider'; // Kontext für globale Audioverwaltung
+import { AudioContextProvider } from './components/AppLogic/AudioContextProvider'; // 🎧 Provides global audio management context
 
-// 🪴 Initialisiere das React-App-Root-Element
+// 🪴 Initializes the React app root element
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    {/* 🌐 AudioContextProvider stellt den globalen Audiokontext zur Verfügung */}
+    {/* 🌐 AudioContextProvider supplies the global audio context */}
     <AudioContextProvider>
       <App />
     </AudioContextProvider>

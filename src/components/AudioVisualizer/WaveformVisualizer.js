@@ -1,18 +1,19 @@
-// src/components/AudioVisualizer/WaveformVisualizer.js - Zeichnet die Wellenform der Audiodaten im Canvas
+// src/components/AudioVisualizer/WaveformVisualizer.js - Renders the waveform of audio data on a canvas
 
 /**
- * 🎵 WaveformVisualizer: Visualisiert die Audiodaten als weiche, skalierbare Wellenform im Canvas.
- * Nutzt proportionale Skalierung, um auch im Fullscreen-Modus konsistent auszusehen.
+ * 🌊 WaveformVisualizer: Visualizes audio data as a smooth, scalable waveform on a canvas.
+ * Uses proportional scaling to maintain consistency even in fullscreen mode.
+ * Keeps the line stable when no audio is playing.
  */
 
 export default function WaveformVisualizer(
   canvas, 
   analyser, 
   dataArray, 
-  { waveColor = 'rgb(0, 255, 0)' }
+  { waveColor = 'rgb(255, 0, 0)' }
 ) {
 
-  // 🛠 Validierungen
+  // 🛠 Validation Checks
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('WaveformVisualizer: Invalid canvas element');
     return;
@@ -31,7 +32,7 @@ export default function WaveformVisualizer(
 
   canvasCtx.save();
 
-  // 🖌 Stileinstellungen für die Wellenform mit Glow-Effekt
+  // 🖌 Style settings for the waveform with a glow effect
   canvasCtx.lineWidth = 2;
   canvasCtx.strokeStyle = waveColor;
   canvasCtx.lineJoin = 'round';
@@ -44,24 +45,34 @@ export default function WaveformVisualizer(
 
   const { width, height } = canvas;
 
+  // 🧮 Calculate slice width for waveform rendering
   const sliceWidth = width / (dataArray.length - 1);
   let x = 0;
 
-  for (let i = 0; i < dataArray.length; i++) {
-    const v = dataArray[i] / 128.0; 
-    const y = (v * height) / 2; 
+  // 🌊 Check if the audio is silent
+  const silenceThreshold = 2; // Tolerance for silence detection
+  const isSilent = dataArray.every(value => Math.abs(value - 128) < silenceThreshold);
 
-    if (i === 0) {
-      canvasCtx.moveTo(x, y); 
-    } else {
-      canvasCtx.lineTo(x, y); 
+  if (isSilent) {
+    // ➖ Draw a flat line in the middle if the audio is silent
+    canvasCtx.moveTo(0, height / 2);
+    canvasCtx.lineTo(width, height / 2);
+  } else {
+    // 🎶 Draw the waveform based on audio data
+    for (let i = 0; i < dataArray.length; i++) {
+      const v = dataArray[i] / 128.0; 
+      const y = (v * height) / 2; 
+
+      if (i === 0) {
+        canvasCtx.moveTo(x, y); 
+      } else {
+        canvasCtx.lineTo(x, y); 
+      }
+
+      x += sliceWidth;
     }
-
-    x += sliceWidth;
   }
 
-  canvasCtx.lineTo(width, height / 2);
   canvasCtx.stroke();
-
   canvasCtx.restore();
 }

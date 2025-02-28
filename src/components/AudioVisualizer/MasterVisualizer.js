@@ -1,4 +1,11 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Bereinigt: Frequency, Waveform, Circle und Oscilloscope Visualizer
+// src/components/AudioVisualizer/MasterVisualizer.js - Manages Frequency, Waveform, Circle, and Ball Visualizers
+
+/**
+ * 🎛️ MasterVisualizer: Combines and manages all available audio visualizers on a single canvas.
+ * Renders the Frequency, Waveform, Circle, and Ball visualizers based on user selection.
+ * Supports dynamic color, centering, and fullscreen mode for an immersive audio-visual experience.
+ * Automatically handles canvas resizing and maintains smooth animations.
+ */
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
@@ -7,15 +14,16 @@ import { Visualizers } from './configs';
 function MasterVisualizer({
   selectedDevice,
   activeVisualizers,
-  waveColor, // Nur Waveform nutzt den Colorpicker
-  frequencyColor, // Dynamische Farbe für Frequency Visualizer
-  isFrequencyCentered, // Zentrierungsoption für Frequency Visualizer
+  waveColor, // 🎨 Color for Waveform Visualizer
+  frequencyColor, // 📊 Dynamic color for Frequency Visualizer
+  isFrequencyCentered, // 📊 Centering option for Frequency Visualizer
 }) {
 
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // 🧮 Resizes the canvas to match the screen size and handles high DPI displays
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -32,21 +40,22 @@ function MasterVisualizer({
     }
   }, []);
 
+  // ⛶ Toggles fullscreen mode
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
-      if (containerRef.current) {
-        containerRef.current.requestFullscreen?.();
-        setIsFullscreen(true);
-      }
+      containerRef.current?.requestFullscreen?.();
+      setIsFullscreen(true);
     }
   };
 
+  // 🚦 Handles exit from fullscreen mode
   const exitFullscreenHandler = () => {
     if (!document.fullscreenElement) {
       setIsFullscreen(false);
     }
   };
 
+  // 📏 Adds and removes event listeners for fullscreen and window resize events
   useEffect(() => {
     document.addEventListener('fullscreenchange', exitFullscreenHandler);
     resizeCanvas();
@@ -58,10 +67,12 @@ function MasterVisualizer({
     };
   }, [resizeCanvas]);
 
+  // 🎵 Initializes audio and handles rendering of active visualizers
   useEffect(() => {
     const canvas = canvasRef.current;
     const canvasCtx = canvas.getContext('2d');
 
+    // 🚫 No audio device selected or no visualizers active
     if (!selectedDevice || activeVisualizers.length === 0) {
       canvasCtx?.clearRect(0, 0, canvas.width, canvas.height);
       canvasCtx.fillStyle = 'black';
@@ -77,10 +88,12 @@ function MasterVisualizer({
       const renderFrame = () => {
         if (!animationActive) return;
 
+        // 🖌 Clear canvas and set background
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         canvasCtx.fillStyle = 'black';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
+        // 📊 Render Frequency Visualizer
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
           Visualizers['frequency'](canvas, analyser, dataArray, {
             frequencyColor,
@@ -88,20 +101,23 @@ function MasterVisualizer({
           });
         }
 
+        // 🌊 Render Waveform Visualizer
         if (activeVisualizers.includes('waveform') && Visualizers['waveform']) {
           Visualizers['waveform'](canvas, analyser, dataArray, {
             waveColor,
           });
         }
 
+        // 🎡 Render Circle Visualizer
         if (activeVisualizers.includes('circle') && Visualizers['circle']) {
           Visualizers['circle'](canvas, analyser, dataArray, {
             waveColor: 'rgba(255, 255, 0, 0.7)',
           });
         }
 
-        if (activeVisualizers.includes('oscilloscope') && Visualizers['oscilloscope']) {
-          Visualizers['oscilloscope'](canvas, analyser, dataArray, {
+        // 🎱 Render Ball Visualizer
+        if (activeVisualizers.includes('ball') && Visualizers['ball']) {
+          Visualizers['ball'](canvas, analyser, dataArray, {
             waveColor: 'rgba(255, 255, 255, 1.0)',
           });
         }

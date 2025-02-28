@@ -3,7 +3,7 @@
 import FrequencyVisualizer from './FrequencyVisualizer'; // 🎨 Visualisiert das Frequenzspektrum als Balkendiagramm
 import WaveformVisualizer from './WaveformVisualizer'; // 🌊 Zeichnet die Audiosignale als Wellenform
 import CircleVisualizer from './CircleVisualizer'; // 🌀 Kreis Visualizer
-import OscilloscopeVisualizer from './OscilloscopeVisualizer'; // 🎛️ Oscilloscope Visualizer
+import BallVisualizer from './BallVisualizer'; // 🎛️ Oscilloscope Visualizer
 
 /**
  * 🧮 Visualizer Konfiguration
@@ -13,5 +13,5 @@ export const Visualizers = {
   frequency: FrequencyVisualizer, // Frequenzspektrum-Visualizer
   waveform: WaveformVisualizer, // Wellenform-Visualizer
   circle: CircleVisualizer, // Kreis-Visualizer
-  oscilloscope: OscilloscopeVisualizer, // Oscilloscope-Visualizer
+  ball: BallVisualizer, // Ball-Visualizer
 };

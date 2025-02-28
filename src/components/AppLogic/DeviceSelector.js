@@ -1,39 +1,39 @@
-// src/components/AppLogic/DeviceSelector.js - Bevorzugt Mikrofon, Cable Input, Line In oder Standardgerät
+// src/components/AppLogic/DeviceSelector.js - Prefers Microphone, Cable Input, Line In, or default audio device
 
 import React, { useState, useEffect } from "react";
 import "../../styles/App.css";
 
 /**
- * 🎙️ DeviceSelector Komponente
- * Bietet eine Dropdown-Liste zur Auswahl des Audioeingabegeräts.
- * Bevorzugt automatisch ein Mikrofon, Cable Input, Line In oder das erste verfügbare Gerät.
+ * 🎙️ DeviceSelector Component
+ * Provides a dropdown list to select the audio input device.
+ * Automatically prefers a Microphone, Cable Input, Line In, or the first available device.
  * 
- * @param {Function} onDeviceSelect - Callback-Funktion zur Übergabe des ausgewählten Geräte-ID
+ * @param {Function} onDeviceSelect - Callback function to pass the selected device ID
  */
 function DeviceSelector({ onDeviceSelect }) {
-  const [devices, setDevices] = useState([]); // 📱 Verfügbare Audiogeräte
-  const [selectedDevice, setSelectedDevice] = useState(""); // 🎯 Aktuell ausgewähltes Gerät
+  const [devices, setDevices] = useState([]); // 📱 Available audio devices
+  const [selectedDevice, setSelectedDevice] = useState(""); // 🎯 Currently selected device
 
-  // 🔄 Lädt verfügbare Audioeingabegeräte bei Komponentenmout
+  // 🔄 Loads available audio input devices when the component mounts
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        // 🆕 Fordert Berechtigungen für Audioeingaben an
+        // 🆕 Requests permissions for audio input
         await navigator.mediaDevices.getUserMedia({ audio: true });
         const deviceList = await navigator.mediaDevices.enumerateDevices();
 
-        // 🎧 Filtert nur Audioeingabegeräte heraus
+        // 🎧 Filters only audio input devices
         const audioDevices = deviceList.filter((device) => device.kind === "audioinput");
         setDevices(audioDevices);
 
-        // 🔍 Bevorzugt spezifische Geräte in der Reihenfolge: Mikrofon, Cable Input, Line In, Standardgerät
+        // 🔍 Prefers specific devices in the order: Microphone, Cable Input, Line In, Default device
         const preferredDevice = audioDevices.find((device) =>
           ["microphone", "cable input", "line in", "stereo mix"].some((keyword) =>
             device.label.toLowerCase().includes(keyword)
           )
         );
 
-        // 🚦 Setzt entweder das bevorzugte Gerät oder das erste verfügbare Gerät als Standard
+        // 🚦 Sets either the preferred device or the first available device as the default
         const defaultDevice = preferredDevice || audioDevices[0];
 
         if (defaultDevice) {
@@ -47,13 +47,13 @@ function DeviceSelector({ onDeviceSelect }) {
 
     fetchDevices();
 
-    // 🔄 Regelmäßige Aktualisierung der Geräte alle 5 Sekunden (optional)
+    // ⏲️ Optionally updates the device list every 5 seconds
     const interval = setInterval(fetchDevices, 5000);
     return () => clearInterval(interval);
     
   }, [onDeviceSelect]);
 
-  // 🆕 Verarbeitet Änderungen in der Geräteauswahl
+  // 🆕 Handles changes in the selected device
   const handleDeviceChange = (event) => {
     const selectedDeviceId = event.target.value;
     setSelectedDevice(selectedDeviceId);
@@ -64,7 +64,7 @@ function DeviceSelector({ onDeviceSelect }) {
     <div className="device-selector">
       <label htmlFor="device-selector">Select Audio Input:</label>
       
-      {/* 🎛️ Dropdown-Liste für verfügbare Audiogeräte */}
+      {/* 🎛️ Dropdown list for available audio devices */}
       <select id="device-selector" value={selectedDevice} onChange={handleDeviceChange}>
         {devices.map((device) => (
           <option key={device.deviceId} value={device.deviceId}>

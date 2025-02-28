@@ -1,19 +1,19 @@
-// src/components/AppLogic/FullscreenContainer.js - Bietet Fullscreen-Modus für verschachtelte Komponenten
+// src/components/AppLogic/FullscreenContainer.js - Provides fullscreen mode for nested components
 
 import React, { useRef, useState, useEffect } from 'react';
 import "../../styles/App.css";
 
 /**
- * 🎬 FullscreenContainer Komponente
- * Bietet eine einheitliche Steuerung für den Fullscreen-Modus für beliebige Kinder-Komponenten.
+ * 🎬 FullscreenContainer Component
+ * Provides unified control for fullscreen mode for any child components.
  * 
- * @param {ReactNode} children - Die Komponente, die im Fullscreen-Modus dargestellt werden soll
+ * @param {ReactNode} children - The component to be displayed in fullscreen mode
  */
 function FullscreenContainer({ children }) {
   const containerRef = useRef(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // 🔄 Wechselt zwischen Fullscreen und Standardansicht
+  // 🔄 Toggles between fullscreen and standard view
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       containerRef.current.requestFullscreen().catch((err) => {
@@ -26,7 +26,7 @@ function FullscreenContainer({ children }) {
     }
   };
 
-  // 🎯 Stellt sicher, dass der Button-Zustand synchron bleibt
+  // 🎯 Keeps the button state synchronized with fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(Boolean(document.fullscreenElement));
@@ -43,6 +43,7 @@ function FullscreenContainer({ children }) {
     <div ref={containerRef} className="fullscreen-container">
       {children}
 
+      {/* ⛶ Button to toggle fullscreen mode */}
       <button
         className="fullscreen-button"
         onClick={toggleFullscreen}

@@ -1,8 +1,8 @@
-// src/components/AudioVisualizer/FrequencyVisualizer.js - Visualisiert das Frequenzspektrum als Balkendiagramm im Canvas
+// src/components/AudioVisualizer/FrequencyVisualizer.js - Visualizes the frequency spectrum as a bar chart on the canvas
 
 /**
- * 🎚 FrequencyVisualizer: Visualisiert Frequenzspektren als dynamische Balken im Canvas.
- * Unterstützt zentrierte Darstellung und passt sich proportional an die Canvas-Größe an.
+ * 📊 FrequencyVisualizer: Visualizes frequency spectrums as dynamic bars on a canvas.
+ * Supports centered display and proportionally adapts to the canvas size.
  */
 
 export default function FrequencyVisualizer(
@@ -11,7 +11,8 @@ export default function FrequencyVisualizer(
   dataArray,
   { frequencyColor = 'rgb(255, 0, 0)', centered = false, scale = 1 }
 ) {
-  
+
+  // 🛠 Validation Checks
   if (!(canvas instanceof HTMLCanvasElement)) {
     console.error('FrequencyVisualizer: Invalid canvas element');
     return;
@@ -30,21 +31,22 @@ export default function FrequencyVisualizer(
 
   const { width, height } = canvas;
 
+  // 🧮 Calculate Nyquist frequency and maximum index for frequency display
   const nyquist = analyser.context.sampleRate / 2; 
   const maxFrequency = 20000; 
   const maxIndex = Math.floor((maxFrequency / nyquist) * dataArray.length);
 
-  // 🎯 Berechnung der Balkenbreite dynamisch basierend auf der Canvas-Größe
+  // 🎯 Dynamic calculation of the bar width based on canvas size
   const barWidth = width / maxIndex; 
   let x = 0;
 
   canvasCtx.clearRect(0, 0, width, height);
 
-  // 🛠️ Kein Glow-Effekt für den Frequency Visualizer
+  // 🛠️ No glow effect for the Frequency Visualizer
   canvasCtx.shadowBlur = 0; 
   canvasCtx.shadowColor = 'transparent';
 
-  // 🎨 Zeichnet die Frequenzbalken auf das Canvas
+  // 📊 Draws the frequency bars on the canvas
   for (let i = 0; i < maxIndex; i++) {
     const amplitude = dataArray[i] / 255.0;
     const barHeight = amplitude * height * 0.8; 

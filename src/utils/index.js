@@ -1,10 +1,10 @@
-// src/utils/index.js - Bündelt und exportiert alle Utility-Funktionen der Anwendung
+// src/utils/index.js - Bundles and exports all utility functions of the application
 
-// 🎧 Exportiere Audio-Berechnungsfunktionen (Lautstärke, Peak, Normalisierung)
+// 🎧 Exports audio calculation functions (e.g., volume, peak, normalization)
 export * from './audioCalculations';
 
-// 🎶 Exportiere Funktionen zur Audioverarbeitung und -einrichtung
+// 🎶 Exports audio processing and setup functions
 export * from './audioUtils';
 
-// 🎨 Exportiere Visualisierungsfunktionen (Zeichnen von Wellenformen und Frequenzspektren)
+// 🎨 Exports visualization utilities (e.g., drawing waveforms and frequency spectrums)
 export * from './visualizerUtils';
