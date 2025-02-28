@@ -18,10 +18,7 @@ body {
 /* ----------------------- */
 
 .app {
-  position: absolute;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative; /* Ändere 'absolute' zu 'relative', um Canvas nicht zu blockieren */
   z-index: 10;
   width: 100%;
   height: 100vh;
@@ -45,8 +42,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 5; /* Über dem Canvas, aber unter der restlichen UI */
-  pointer-events: none;
+  z-index: 5; /* Über dem Canvas */
+  pointer-events: none; /* Verhindert, dass der Header mit dem Canvas interagiert */
 }
 
 h1, h3 {
@@ -213,14 +210,14 @@ h3 {
 /* ----------------------- */
 /* Canvas als Hintergrund */
 canvas {
-  position: fixed;
+  position: fixed; /* Fixed sorgt dafür, dass der Canvas immer den gesamten Bildschirm abdeckt */
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: -1; /* Canvas hinter dem UI */
   border: none;
-  background-color: black; /* Sollte den Hintergrund vollständig füllen */
+  background-color: black; /* Canvas sollte den Hintergrund vollständig füllen */
 }
 
 
