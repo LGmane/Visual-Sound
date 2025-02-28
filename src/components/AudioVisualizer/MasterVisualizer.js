@@ -29,10 +29,11 @@ function MasterVisualizer({
     if (canvas) {
       const ratio = window.devicePixelRatio || 1;
 
-      // Set canvas dimensions for high-DPI displays
+      // Dynamische Berechnung der Bildschirmgröße
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
+      // Setze die Canvas-Größe für Retina-Displays
       canvas.width = width * ratio;
       canvas.height = height * ratio;
       canvas.style.width = `${width}px`;
