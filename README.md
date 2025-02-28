@@ -3,7 +3,7 @@
 ## VisualSound ausprobieren
 
 Du kannst die Anwendung direkt im Browser testen, ohne sie lokal installieren zu müssen:
-[VisualSound - Live-Demo](https://dein-github-name.github.io/visualsound)
+[VisualSound - Live-Demo](https://lgmane.github.io/Visual-Sound/)
 
 ## 1. Projektbeschreibung
 
