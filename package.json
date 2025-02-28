@@ -2,7 +2,7 @@
   "name": "visualsound",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lgmane.github.io/visualsound",
+  "homepage": "https://lgmane.github.io/Visual-Sound",
   "dependencies": {
     "@shadcn/ui": "^0.0.4",
     "@testing-library/jest-dom": "^5.17.0",
