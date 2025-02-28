@@ -65,7 +65,7 @@ function MasterVisualizer({
   // 📏 Adds and removes event listeners for fullscreen and window resize events
   useEffect(() => {
     document.addEventListener('fullscreenchange', exitFullscreenHandler);
-    resizeCanvas();
+    resizeCanvas(); // Initial canvas size on load
     window.addEventListener('resize', resizeCanvas);
 
     return () => {
