@@ -93,6 +93,10 @@ function MasterVisualizer({
         canvasCtx.fillStyle = 'black';
         canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
+        const { width, height } = canvas;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
         // 📊 Render Frequency Visualizer
         if (activeVisualizers.includes('frequency') && Visualizers['frequency']) {
           Visualizers['frequency'](canvas, analyser, dataArray, {
@@ -112,6 +116,8 @@ function MasterVisualizer({
         if (activeVisualizers.includes('circle') && Visualizers['circle']) {
           Visualizers['circle'](canvas, analyser, dataArray, {
             waveColor: 'rgba(255, 255, 0, 0.7)',
+            centerX,
+            centerY,
           });
         }
 
@@ -119,6 +125,8 @@ function MasterVisualizer({
         if (activeVisualizers.includes('ball') && Visualizers['ball']) {
           Visualizers['ball'](canvas, analyser, dataArray, {
             waveColor: 'rgba(255, 255, 255, 1.0)',
+            centerX,
+            centerY,
           });
         }
 

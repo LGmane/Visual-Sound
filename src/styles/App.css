@@ -9,6 +9,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(0, 0, 0);
   color: rgb(255, 255, 255);
+  box-sizing: border-box;
+  overflow: hidden; /* Verhindert Scrollbars */
 }
 
 /* ----------------------- */
@@ -16,14 +18,18 @@ body {
 /* ----------------------- */
 
 .app {
-  position: relative;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
   width: 100%;
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Obere Ausrichtung */
+  justify-content: center; /* Obere Ausrichtung */
 }
 
 /* ----------------------- */
@@ -237,47 +243,4 @@ canvas {
 .mt-20 { margin-top: 20px; }
 .p-10 { padding: 10px; }
 
-/* ----------------------- */
-/* 🎚️ SLIDER STYLING */
-/* ----------------------- */
 
-.bar-width-slider {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 15px;
-}
-
-.bar-width-slider label {
-  color: white;
-  font-size: 1rem;
-  margin-bottom: 10px;
-}
-
-.simple-slider {
-  width: 200px;
-  height: 6px;
-  appearance: none;
-  background: #4a4a4a;
-  border-radius: 5px;
-  outline: none;
-  cursor: pointer;
-}
-
-.simple-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: white;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid #4a4a4a;
-}
-
-.simple-slider::-webkit-slider-thumb:hover {
-  background: #f1f1f1;
-}
-
-.simple-slider:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 5px 2px rgba(222, 203, 4, 0.5);
-}
