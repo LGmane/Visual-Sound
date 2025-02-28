@@ -28,13 +28,19 @@ function MasterVisualizer({
     const canvas = canvasRef.current;
     if (canvas) {
       const ratio = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * ratio;
-      canvas.height = window.innerHeight * ratio;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
+
+      // Set canvas dimensions for high-DPI displays
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
 
       const ctx = canvas.getContext('2d');
       if (ctx) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform before scaling
         ctx.scale(ratio, ratio);
       }
     }

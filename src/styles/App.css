@@ -218,10 +218,11 @@ canvas {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1; 
-  border: none; 
-  background-color: black; 
+  z-index: -1;
+  border: none;
+  background-color: black; /* Sollte den Hintergrund vollständig füllen */
 }
+
 
 /* ----------------------- */
 /* 🚦 UTILITY STYLES */
