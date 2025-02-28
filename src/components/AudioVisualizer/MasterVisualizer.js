@@ -1,11 +1,4 @@
-// src/components/AudioVisualizer/MasterVisualizer.js - Manages Frequency, Waveform, Circle, and Ball Visualizers
-
-/**
- * 🎛️ MasterVisualizer: Combines and manages all available audio visualizers on a single canvas.
- * Renders the Frequency, Waveform, Circle, and Ball visualizers based on user selection.
- * Supports dynamic color, centering, and fullscreen mode for an immersive audio-visual experience.
- * Automatically handles canvas resizing and maintains smooth animations.
- */
+// src/components/AudioVisualizer/MasterVisualizer.js
 
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import { setupAudio } from '../../utils/audioUtils';
@@ -14,14 +7,14 @@ import { Visualizers } from './configs';
 function MasterVisualizer({
   selectedDevice,
   activeVisualizers,
-  waveColor, // 🎨 Color for Waveform Visualizer
-  frequencyColor, // 📊 Dynamic color for Frequency Visualizer
-  isFrequencyCentered, // 📊 Centering option for Frequency Visualizer
+  waveColor,
+  frequencyColor,
+  isFrequencyCentered,
+  isFullscreen,
+  onToggleFullscreen,
 }) {
-
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // 🧮 Resizes the canvas to match the screen size and handles high DPI displays
   const resizeCanvas = useCallback(() => {
@@ -29,7 +22,7 @@ function MasterVisualizer({
     if (canvas) {
       const ratio = window.devicePixelRatio || 1;
 
-      // Dynamische Berechnung der Bildschirmgröße
+      // Dynamische Berechnung der Bildschirmgröße unter Berücksichtigung der DPI
       const width = window.innerWidth;
       const height = window.innerHeight;
 
@@ -47,29 +40,12 @@ function MasterVisualizer({
     }
   }, []);
 
-  // ⛶ Toggles fullscreen mode
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen?.();
-      setIsFullscreen(true);
-    }
-  };
-
-  // 🚦 Handles exit from fullscreen mode
-  const exitFullscreenHandler = () => {
-    if (!document.fullscreenElement) {
-      setIsFullscreen(false);
-    }
-  };
-
   // 📏 Adds and removes event listeners for fullscreen and window resize events
   useEffect(() => {
-    document.addEventListener('fullscreenchange', exitFullscreenHandler);
-    resizeCanvas(); // Initial canvas size on load
     window.addEventListener('resize', resizeCanvas);
+    resizeCanvas(); // Initial resize to ensure canvas size on first render
 
     return () => {
-      document.removeEventListener('fullscreenchange', exitFullscreenHandler);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, [resizeCanvas]);
@@ -161,7 +137,7 @@ function MasterVisualizer({
       <canvas ref={canvasRef} className="visualizer-canvas"></canvas>
 
       {!isFullscreen && (
-        <button className="fullscreen-button" onClick={toggleFullscreen}>
+        <button className="fullscreen-button" onClick={onToggleFullscreen}>
           ⛶
         </button>
       )}
